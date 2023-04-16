@@ -305,7 +305,15 @@ export default {
       for (let branch of edges.values()) {
         res.links.push({
           source:branch.or,
-          target:branch.ex
+          target:branch.ex,
+          lineStyle:{
+
+          },
+          label:{
+            show:true,
+            formatter:(30 + 5)%7+"%",
+
+          }
         });
       }
 
@@ -347,8 +355,29 @@ export default {
       let myChart = echarts.init(document.getElementById('chart_map'),'dark');
 
       myChart.showLoading();
+      this.$axios({
+      method: "get",
+      url: "/api/grid/bus_gen" /* 指明后端 api 路径，由于在 main.js 已指定根路径，因此在此处只需写相对路由 */,
+      data: {
+        /* 传入参数 */
+        // family_id: this.familyId,
+      },
+      headers: {
+        // Authorization: localStorage.getItem("token"),
+      },
+    })
+      .then((res) => {
+        /* res.data - 返回值 */
+       console.log("res_suc");
+       console.log(res);
+      }).catch((err) => {
+        /* 异常信息 */
+        console.log(err);
+       console.log("res_err");
 
+      });
 
+console.log(topo);
 //todo:修改topo的格式
 var graph = this.convertData(topo);
 

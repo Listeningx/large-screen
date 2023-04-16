@@ -14,9 +14,12 @@ Vue.use(vueParticles)
 Vue.use(Vcomp)
 
 Vue.config.productionTip = false
+Vue.prototype.$axios = axios;
+Vue.prototype.$echarts = echarts;
 
 Vue.prototype.$Toast = Toast
 
+axios.defaults.baseURL =  "/";
 
 router.beforeEach((to, from, next) => {
 	if (to.meta.title) {

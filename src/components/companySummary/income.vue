@@ -28,7 +28,7 @@ export default {
       let myChart = echarts.init(document.getElementById('chart_left3'));
       let data = {
         city: ['9:20', '9:30', '9:40', '9:50', '10:00', '10:10'],
-        num: ['555', '896', '1935', '2922', '4508', '5000']
+        num: ['0', '36', '85', '-29', '-48', '-30']
       }
 
       let option = {
@@ -91,8 +91,8 @@ export default {
           data: data.city
         }],
         yAxis: [{
-          min: 0,
-          max: 6000,
+          min: -100,
+          max: 100,
           splitLine: {
             show: false,
             lineStyle: {

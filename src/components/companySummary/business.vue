@@ -37,7 +37,7 @@ export default {
       // 实例化对象
       let myChart = echarts.init(document.getElementById('chart_left1'));
       let charts = { // 按顺序排列从大到小
-        cityList: ['负荷/储能有功', '可调负荷有功', '储能有功', '简单符合有功', '负荷/储能无功'],
+        cityList: ['工厂', '办公楼', '住宅', '车站', '学校'],
         cityData: [1500, 1200, 900, 600, 400]
       }
 
