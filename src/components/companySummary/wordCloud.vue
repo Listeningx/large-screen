@@ -6,7 +6,8 @@
 
 <template>
   <div class="word-container"> 
-    <div class="chart" id="chart_right1"></div>
+    <!-- <div class="chart" id="chart_right1"></div> -->
+    <div id="information">{{warning}}</div>
   </div>
 </template>
 
@@ -17,17 +18,19 @@ export default {
   name: "wordCloud",
   data() {
     return {
-      timer: null
+      timer: null,
+      warning:''
     }
   },
   mounted() {
     this.getEchartRight1();
-    this.timer = setInterval(() => {
-      this.getEchartRight1();
-    }, 5000)
+    // this.timer = setInterval(() => {
+    //   this.getEchartRight1();
+    // }, 5000)
   },
   methods: {
     getEchartRight1() {
+      this.warning = '当前电网总负载为75%，处于较安全状态';
       let myChart = echarts.init(document.getElementById('chart_right1'));
       let option = {
         // tooltip: {
@@ -187,5 +190,13 @@ export default {
   .chart {
     height: 3rem;
   }
+}
+#information{
+  margin-left: 0.1875rem;
+        color: #fff;
+              font-size: 0.225rem;
+          line-height: 0.475rem;
+          padding: 0.1rem 0;
+        
 }
 </style>

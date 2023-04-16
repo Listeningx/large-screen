@@ -23,6 +23,8 @@ export default {
   },
   methods: {
     getEchartLeft2() {
+      setTimeout(()=>{
+      
       let myChart = echarts.init(document.getElementById('chart_left2'));
       let scaleData = [{
         name: '太阳能',
@@ -68,7 +70,7 @@ export default {
           name: scaleData[i].name,
           itemStyle: {
             normal: {
-              borderWidth: 6,
+              borderWidth: 3,
               shadowBlur: 10,
               borderColor: color[i],
               shadowColor: color[i]
@@ -86,15 +88,16 @@ export default {
           name: '',
           type: 'pie',
           clockWise: false,
-          radius: ['66%', '68%'],
           center: ['50%', '50%'],
           hoverAnimation: false,
+          radius:['15%','30%'],
           itemStyle: {
             normal: {
               label: {
                 show: true,
                 position: 'outside',
                 color: '#ddd',
+                edgeDistance:10,
                 formatter: (params) => {
                   let percent = 0;
                   let total = 0;
@@ -111,8 +114,8 @@ export default {
                 rich: rich
               },
               labelLine: {
-                length: 10,
-                length2: 30,
+                length: 25,
+                length2: 5,
                 show: true,
                 color: '#00ffff'
               }
@@ -126,6 +129,8 @@ export default {
       window.addEventListener('resize', () => {
         myChart.resize();
       });
+    },200);
+
     },
   },
   beforeDestroy() {

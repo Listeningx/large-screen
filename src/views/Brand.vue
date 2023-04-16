@@ -27,18 +27,20 @@
         <!-- <littleBar /> -->
 
         <div class="item left">
-          <div class="panel">
 
-      <VueDragResize :isActive="true"  :isResizable="true"  :z="999">
 
-            <h2>设备图谱</h2>
+      <VueDragResize :isActive="true"  :isResizable="true"  :z="999" :x="18" :y="68">
+        <div class="panel">
+
+            <h2>电能流向</h2>
             <business />
             <div class="panel-footer"></div>
-      </VueDragResize>
     </div>
+
+      </VueDragResize>
    
 
-      <VueDragResize :isActive="true"  :isResizable="true"  :z="999">
+      <VueDragResize :isActive="true"  :isResizable="true"  :z="999" :x="18"  :y=325>
 
           <div class="panel">
             <h2>发电机功率占比</h2>
@@ -46,7 +48,7 @@
             <div class="panel-footer"></div>
           </div>
       </VueDragResize>
-      <VueDragResize :isActive="true"  :isResizable="true"  :z="999">
+      <VueDragResize :isActive="true"  :isResizable="true"  :z="999" :x="18" :y="580">
 
           <div class="panel">
             <h2>功率曲线</h2>
@@ -58,7 +60,7 @@
         </div>
 
         <div class="item center">
-          <div class="resume">
+          <!-- <div class="resume">
             <div class="resume-hd">
               <ul>
                 <li>
@@ -68,7 +70,7 @@
                   <countTo :startVal='startVal' :endVal='75' :duration='6000' separator=""></countTo>
                 </li>
                 <li>
-                  <countTo :startVal='startVal' :endVal='3000' :duration='6000' separator=""></countTo>
+                  <countTo :startVal='startVal' :endVal='bus_num' :duration='6000' separator=""></countTo>
                 </li>
               </ul>
             </div>
@@ -76,10 +78,10 @@
               <ul>
                 <li>电网总功率（单位：千瓦）</li>
                 <li>电网负载百分比（单位：%）</li>
-                <li>电网危险等级</li>
+                <li>总线数量</li>
               </ul>
             </div>
-          </div>
+          </div> -->
           <div class="map">
             <div class="chart" id="chart_map" height="100%"></div>
             <div class="map1"></div>
@@ -89,21 +91,33 @@
         </div>
 
         <div class="item right">
+      <VueDragResize :isActive="true"  :isResizable="true"  :z="999" :x="1290" :y=68>
+
           <div class="panel">
-            <h2>预警信息</h2>
-            <!-- <wordCloud /> -->
+            <h2>安全评估</h2>
+            <wordCloud />
             <div class="panel-footer"></div>
           </div>
+        </VueDragResize>
+
+      <VueDragResize :isActive="true"  :isResizable="true"  :z="999" :x="1290" :y=325>
+
           <div class="panel">
             <h2>异常分析</h2>
             <distribution />
             <div class="panel-footer"></div>
           </div>
+        </VueDragResize>
+
+      <VueDragResize :isActive="true"  :isResizable="true"  :z="999" :x="1290" :y="580">
+
           <div class="panel">
-            <h2>推荐操作</h2>
+            <h2>电网关键事件</h2>
             <history />
             <div class="panel-footer"></div>
           </div>
+      </VueDragResize>
+
         </div>
       </section>
   
@@ -137,6 +151,7 @@ export default {
       weatcherData: {},
       startVal: 0,
       geoCoordMap: {},
+      bus_num:427,
      
   	}
   },
@@ -232,7 +247,7 @@ export default {
           name:"gen_" + id[1],
           category: 1,//1代表发电机
           symbolSize:10,
-
+          symbol:'diamond'
         });
 
           res.links.push({
@@ -250,6 +265,8 @@ export default {
             name:"ld_" + id[1],
             category:2,//2表示负载
           symbolSize:10,
+          symbol:'triangle'
+
           });
 
           res.links.push({
@@ -330,7 +347,7 @@ export default {
       let myChart = echarts.init(document.getElementById('chart_map'),'dark');
 
       myChart.showLoading();
-// $.getJSON("les-miserables.json", function (graph) {
+
 
 //todo:修改topo的格式
 var graph = this.convertData(topo);
@@ -355,8 +372,9 @@ var graph = this.convertData(topo);
         // selectedMode: 'single',
         data: graph.categories.map(function (a) {
           return a.name;
-        })
-      }
+        }),
+        bottom:0,
+      },
     ],
     animationDuration: 1500,
     animationEasingUpdate: 'quinticInOut',
@@ -364,10 +382,16 @@ var graph = this.convertData(topo);
     series: [
       {
         // name: 'Les Miserables',
-    color:['#8dfafd','#d432d6','#f6ad59'],
+    // color:['#8dfafd','#d432d6','#f6ad59'],
+        color:['#05f8f8','#e64983','#f8e088'],
+
 
         type: 'graph',
         layout: 'force',
+
+        force:{
+          repulsion:38,
+        },
         data: graph.nodes,
         links: graph.links,
         categories: graph.categories,
@@ -378,14 +402,15 @@ var graph = this.convertData(topo);
         },
         lineStyle: {
           color: 'source',
-          curveness: 0.3
+          curveness: 0.02
         },
         emphasis: {
           focus: 'adjacency',
           lineStyle: {
             width: 10
           }
-        }
+        },
+       
       }
     ]
   };
@@ -411,6 +436,7 @@ option && myChart.setOption(option);
   position: absolute;
   width: 100%;
   height: 100%;
+  // height:13.125rem;
   background: #000;
   .wrap {
     background: url(../assets/img/brand/bg.jpg) no-repeat #000;
@@ -470,6 +496,8 @@ option && myChart.setOption(option);
     }
     
     .mainbox {
+      height: 13.125rem;
+      // height:100%;
       min-width: 1024px;
       max-width: 1920px;
       padding: 0.125rem 0.125rem 0;
@@ -484,6 +512,7 @@ option && myChart.setOption(option);
           .resume {
             background: rgba(101, 132, 226, 0.1);
             padding: 0.1875rem;
+            opacity: 0.6;
             .resume-hd {
               position: relative;
               border: 1px solid rgba(25, 186, 139, 0.17);
@@ -565,19 +594,23 @@ option && myChart.setOption(option);
           transform: translate(-50%, -50%);
           width: 6.475rem;
           height: 6.475rem;
-          background: url(../assets/img/brand/map.png) no-repeat;
+          // background: url(../assets/img/brand/map.png) no-repeat;
           background-size: 100% 100%;
           opacity: 0.3;
         }
         .map {
-          position: relative;
-          height: 10.125rem;
-          .chart {
             position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 5;
-            height: 10.125rem;
+            top:0%;
+            left:0;
+          // position: relative;
+          // height: 13.125rem;
+          .chart {
+            position: fixed;
+            top: 20%;
+            left: 0%;
+            z-index: 1;
+            height: 100%;
+            // height: 13.125rem;
             width: 100%;
             // opacity: 0.6;
 
@@ -599,7 +632,7 @@ option && myChart.setOption(option);
             @extend %map-style;
             width: 7.075rem;
             height: 7.075rem;
-            background-image: url(../assets/img/brand/jt.png);
+            // background-image: url(../assets/img/brand/jt.png);
             -webkit-animation: rotate1 10s linear infinite;
             animation: rotate1 10s linear infinite;
           }

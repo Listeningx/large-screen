@@ -7,7 +7,11 @@
 <template>
   
     <div class="business-container"> 
+      <!-- <VueDragResize :isActive="true"  :isResizable="true"  :z="999" :x="18" :y="68"> -->
+
       <div class="chart" id="chart_left1"></div> 
+    <!-- </VueDragResize> -->
+
   </div>
 
 </template>
@@ -29,11 +33,12 @@ export default {
   },
   methods: {
     getEchartLeft1() {
+      setTimeout(()=>{
       // 实例化对象
       let myChart = echarts.init(document.getElementById('chart_left1'));
       let charts = { // 按顺序排列从大到小
-        cityList: ['金融行业', '电子政务', '文创版权', '教育行业', '智慧停车', '医疗互联', '物流行业'],
-        cityData: [1500, 1200, 900, 600, 400, 300, 100]
+        cityList: ['负荷/储能有功', '可调负荷有功', '储能有功', '简单符合有功', '负荷/储能无功'],
+        cityData: [1500, 1200, 900, 600, 400]
       }
 
       let top10CityList = charts.cityList;
@@ -169,10 +174,13 @@ export default {
       };
 
       // 把配置给实例对象
-      myChart.setOption(option, true);
+     
+        myChart.setOption(option, true);
       window.addEventListener('resize', () => {
         myChart.resize();
       });
+      },200);
+      
     },
   },
   beforeDestroy() {
@@ -187,4 +195,9 @@ export default {
     height: 3rem;
   }
 }
+.chart {
+    height: 3rem;
+    // height: 30px;
+
+  }
 </style>

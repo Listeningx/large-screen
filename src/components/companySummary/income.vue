@@ -23,9 +23,11 @@ export default {
   },
   methods: {
     getEchartLeft3() {
+      setTimeout(()=>{
+
       let myChart = echarts.init(document.getElementById('chart_left3'));
       let data = {
-        city: ['2015', '2016', '2017', '2018', '2019', '2020'],
+        city: ['9:20', '9:30', '9:40', '9:50', '10:00', '10:10'],
         num: ['555', '896', '1935', '2922', '4508', '5000']
       }
 
@@ -55,7 +57,7 @@ export default {
             },
           },
           formatter: (value) => {
-            return value[0].name + '年营业收入：<br>' + value[0].value + '万元'; 
+            return value[0].name + '总功率：<br>' + value[0].value + 'kW'; 
           }
         },
         grid: {
@@ -80,7 +82,7 @@ export default {
               margin: 15,
             },
             formatter: (data) => {
-                return data.substr(2) + '年';
+                return data;
             }
           },
           axisTick: {
@@ -168,12 +170,13 @@ export default {
       window.addEventListener('resize', () => {
         myChart.resize();
       })
-    },
+    },200);
   },
   beforeDestroy() {
     
   }
-};
+}
+}//export default
 </script>
 
 <style lang="scss" scoped>

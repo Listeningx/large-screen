@@ -6,7 +6,8 @@
 
 <template>
   <div class="distribution-container"> 
-    <div class="chart" id="chart_right2"></div>
+    <!-- <div class="chart" id="chart_right2"></div> -->
+    <div id="information">{{warning}}</div>
   </div>
 </template>
 
@@ -15,14 +16,17 @@ export default {
   name: "distribution",
   data() {
     return {
-      
+      warning:'',
     }
   },
   mounted() {
     this.getEchartRight2();
+    // this.warning = '注意！14100100-12100100支线负载过高！';
   },
   methods: {
     getEchartRight2() {
+    this.warning = '注意！14100100-12100100支线负载过高！';
+
       let myChart = echarts.init(document.getElementById('chart_right2'));
       let option = {
         color: ['#EAEA26', '#906BF9', '#FE5656', '#01E17E', '#3DD1F9', '#FFAD05', '#4465fc'],
@@ -206,5 +210,14 @@ export default {
   .chart {
     height: 3rem;
   }
+}
+#information{
+  margin-left: 0.1875rem;
+        color: #fff;
+              font-size: 0.225rem;
+              // font-size: 0.175rem;
+          line-height: 0.475rem;
+          padding: 0.1rem 0;
+        
 }
 </style>
