@@ -227,10 +227,11 @@ export default {
       })
     },
     convertData(data) { // 拓扑图数据转换
+      var num = 30;
       let res = {nodes:[],links:[]};
       console.log("convertdata")
-      // console.log(data.bus_gen)
-      let gens = data.bus_gen;
+
+      let gens = data["bus_gen"];
         Reflect.ownKeys(gens).forEach(function(key){
           // console.log(key,gens[key]);
           res.nodes.push({
@@ -253,6 +254,8 @@ export default {
           res.links.push({
             source:"gen_" + id[1],
             target:key.toString(),
+      value:100,
+
           })
         }
         });
@@ -266,12 +269,13 @@ export default {
             category:2,//2表示负载
           symbolSize:10,
           symbol:'triangle'
-
           });
 
           res.links.push({
             source:key.toString(),
             target:"ld_" + id[1],
+      value:100,
+
           })
         }
       })
@@ -280,7 +284,7 @@ export default {
       let branches = data.bus_branch;
       Reflect.ownKeys(branches).forEach(function(key){
         if(branches[key]!=''){
-// console.log(branches[key])
+
           for(let i = 0;i < branches[key].length;i++){
             let item = branches[key][i].split("_");
             let num = item[0].split("h");
@@ -298,7 +302,6 @@ export default {
                   edges.get(num).ex=key;
                 }
             }
-           
           }
         }
       });
@@ -311,10 +314,15 @@ export default {
           },
           label:{
             show:true,
-            formatter:(30 + 5)%7+"%",
-
+            formatter:num+"%",
+            color:"#fff",
+            textBorderColor:"#000",
+          },
+          edgeLable:{
+            
           }
         });
+        num = (num + Math.ceil(Math.random()*10) )% 100 +1
       }
 
       res.categories = [
@@ -327,61 +335,79 @@ export default {
       {
         "name": "负载"
       },
-      // {
-      //   "name": "thermal"
-      // },
-      // {
-      //   "name": "nuclear"
-      // },
-      // {
-      //   "name": "distribution"
-      // },
-      // {
-      //   "name": "interconnection"
-      // },
-      // {
-      //   "name": "with transferbus"
-      // },
-      // {
-      //   "name": "I"
-      // }
     ];
  
      console.log(res)
       return res;
     },
     getEchart() { // 初始化地图数据
-      // var ROOT_PATH = 'https://echarts.apache.org/examples';
       let myChart = echarts.init(document.getElementById('chart_map'),'dark');
 
       myChart.showLoading();
+      let topo_data = {
+        bus_gen:{},bus_load:{},bus_branch:{}
+      }
       this.$axios({
       method: "get",
-      url: "/api/grid/bus_gen" /* 指明后端 api 路径，由于在 main.js 已指定根路径，因此在此处只需写相对路由 */,
-      data: {
-        /* 传入参数 */
-        // family_id: this.familyId,
-      },
-      headers: {
-        // Authorization: localStorage.getItem("token"),
-      },
+      url: "/api/grid/bus_gen/"
     })
       .then((res) => {
         /* res.data - 返回值 */
        console.log("res_suc");
-       console.log(res);
+       var tmp = res.data;
+      tmp = tmp.replace(/\'/g, "\"");
+      tmp = JSON.parse(tmp);
+      topo_data.bus_gen = tmp
       }).catch((err) => {
         /* 异常信息 */
         console.log(err);
        console.log("res_err");
 
       });
+      this.$axios({
+      method: "get",
+      url: "/api/grid/bus_load/" 
+    })
+      .then((res) => {
+        /* res.data - 返回值 */
+       console.log("res_suc");
+       var tmp = res.data;
+      tmp = tmp.replace(/\'/g, "\"");
+      tmp = JSON.parse(tmp);
+      topo_data.bus_load = tmp
+      }).catch((err) => {
+        /* 异常信息 */
+        console.log(err);
+       console.log("res_err");
 
-console.log(topo);
+      });
+      this.$axios({
+      method: "get",
+      url: "/api/grid/bus_branch/" 
+    })
+      .then((res) => {
+        /* res.data - 返回值 */
+       console.log("res_suc");
+      // topo_data.bus_branch = res.data;
+      var tmp = res.data;
+      tmp = tmp.replace(/\'/g, "\"");
+      tmp = JSON.parse(tmp);
+      topo_data.bus_branch = tmp
+    
+      }).catch((err) => {
+        /* 异常信息 */
+        console.log(err);
+       console.log("res_err");
+
+      });
+console.log("topo_data")
+console.log(topo_data);
+console.log(topo)
+
+
 //todo:修改topo的格式
 var graph = this.convertData(topo);
 
-  // console.log(graph)
   myChart.hideLoading();
   graph.nodes.forEach(function (node) {
     node.label = {
@@ -410,16 +436,13 @@ var graph = this.convertData(topo);
     backgroundColor:'transparent',
     series: [
       {
-        // name: 'Les Miserables',
-    // color:['#8dfafd','#d432d6','#f6ad59'],
         color:['#05f8f8','#e64983','#f8e088'],
-
 
         type: 'graph',
         layout: 'force',
 
         force:{
-          repulsion:38,
+          repulsion:48,
         },
         data: graph.nodes,
         links: graph.links,
@@ -431,7 +454,8 @@ var graph = this.convertData(topo);
         },
         lineStyle: {
           color: 'source',
-          curveness: 0.02
+          curveness: 0.01,
+          width:3
         },
         emphasis: {
           focus: 'adjacency',
@@ -444,7 +468,37 @@ var graph = this.convertData(topo);
     ]
   };
   myChart.setOption(option);
-// });
+
+  setInterval(function () {
+console.log("setinteeeeeeeerval")
+  var source = "bus-"+ Math.round((97) * Math.random())+"100100";
+  var target = "bus-"+ Math.round((97) * Math.random())+"100100";
+  console.log(source)
+  if (source !== target) {
+    graph.links.push( {
+      source:source,
+      target:target,
+      value:200,
+      label:{
+            show:true,
+            formatter:(Math.round((97) * Math.random()) + 1 )+"%",
+            color:"#fff",
+            textBorderColor:"#000",
+          }
+        });
+  }
+  myChart.setOption({
+    series: [
+      {
+        roam: true,
+        data: graph.nodes,
+        edges: graph.links
+      }
+    ]
+  });
+  // console.log('nodes: ' + data.length);
+  // console.log('links: ' + data.length);
+}, 5000);
 
 option && myChart.setOption(option);
 
@@ -651,7 +705,7 @@ option && myChart.setOption(option);
             @extend %map-style;
             width: 8.0375rem;
             height: 8.0375rem;
-            background-image: url(../assets/img/brand/lbx.png);
+            // background-image: url(../assets/img/brand/lbx.png);
             opacity: 0.6;
             -webkit-animation: rotate 15s linear infinite;
             animation: rotate 15s linear infinite;

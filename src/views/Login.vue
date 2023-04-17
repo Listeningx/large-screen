@@ -9,7 +9,7 @@
   	<div class="layer">
   			<div class="some-space">
         	<div class="form">
-						<h2>大数据可视化平台</h2>
+						<h2>电网智能运行调控可视化平台</h2>
 						<div class="item">
 							<i class="iconfont icon-user"></i>
 							<input
@@ -102,14 +102,14 @@ export default {
   	login () {
   		if (this.userName == 'admin' && this.userPwd == '123456') {
          this.$router.push({
-          path: '/home'
+          path: '/brand'
          })
       } else {
-        this.$Toast({
-          content: '请输入正确的用户名和密码',
-          type: 'error',
-          // hasClose: true
-        })
+        // this.$Toast({
+        //   content: '请输入正确的用户名和密码',
+        //   type: 'error',
+        //   // hasClose: true
+        // })
       }
   	},
     confirm () {

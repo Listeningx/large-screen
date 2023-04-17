@@ -106,7 +106,7 @@ export default {
                   }
                   percent = ((params.value / total) * 100).toFixed(0);
                   if (params.name !== '') {
-                    return params.name + '\n{white|' + '占比' + percent + '%}';
+                    return params.name + '\n{white|'  + percent + '%}';
                   } else {
                     return '';
                   }

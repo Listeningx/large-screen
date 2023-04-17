@@ -6,7 +6,7 @@ module.exports = {
     open:true,
     host:"localhost",
 
-    port: 8081,
+    port: 8095,
     proxy: {
       '/api': {    //这里的/api表示的意思是以/api开头的才生效 ->刷下面的重点
         target: "http://39.105.194.84:8001/",
