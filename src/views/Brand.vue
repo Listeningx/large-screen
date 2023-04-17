@@ -10,10 +10,10 @@
       <header>
         <div class="weather">
           <img :src="imgSrc">
-          <span class="tem">{{ weatcherData.tem }}°C</span> 
-          <span class="wea">{{ weatcherData.wea }}</span>
+          <span class="tem">20°C</span> 
+          <span class="wea">晴</span>
         </div>
-        <h2>电网运行情况实时显示大屏</h2>
+        <h2>“灵犀”电网运行情况实时显示大屏</h2>
         <div class="showTime">
           <span class="time">{{ nowTime }}</span>
           <span class="date">
@@ -56,7 +56,7 @@
             <div class="panel-footer"></div>
           </div>
       </VueDragResize>
-
+<button style="position:absolute;top:30px;left:30px;">跳转</button>
         </div>
 
         <div class="item center">
@@ -442,7 +442,7 @@ var graph = this.convertData(topo);
         layout: 'force',
 
         force:{
-          repulsion:48,
+          repulsion:50,
         },
         data: graph.nodes,
         links: graph.links,
