@@ -56,7 +56,7 @@
             <div class="panel-footer"></div>
           </div>
       </VueDragResize>
-<button style="position:absolute;top:30px;left:30px;">跳转</button>
+<button class="loginBtn" style="position:absolute;top:30px;left:30px;z-index=1000" @click.stop="jump2map">跳转</button>
         </div>
 
         <div class="item center">
@@ -510,11 +510,34 @@ option && myChart.setOption(option);
   },
   beforeDestroy() {
     clearInterval(this.timer);
+  },
+  jump2map(event){
+    console.log("jumpjump")
+    this.$router.push({
+          path: '/map'
+         })
   }
 }
 </script>
 
 <style lang="scss" scoped>
+
+.loginBtn {
+	  		width: 100%;
+	  		padding: 12px 0;
+	  		border: 1px solid #d3d7f7;
+        font-size: 16px;
+    		color: #d3d7f7;
+    		cursor: pointer;
+    		background: transparent;
+    		border-radius: 4px;
+        margin-top: 10px;
+    		&:hover {
+    			color: #fff;
+    			background: #0090ff;
+    			border-color: #0090ff;
+    		}
+	  	}
 .brand-container {
   position: absolute;
   width: 100%;

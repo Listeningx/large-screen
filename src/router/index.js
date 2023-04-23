@@ -24,6 +24,14 @@ const routes = [
     meta: {
       title: '电网调控'
     }
+  },
+  {
+    path: '/map',
+    name: 'Map',
+    component: () => import('@/views/Map.vue'),
+    meta: {
+      title: '发电地图'
+    }
   }
 ]
 
