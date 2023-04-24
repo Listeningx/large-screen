@@ -5,6 +5,9 @@ import store from './store'
 import vueParticles from 'vue-particles'
 import Vcomp from './components/index'
 import Toast from './components/toast'
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+
 
 import '@/assets/styles/base.scss'
 import '@/assets/styles/common.scss'
@@ -12,7 +15,7 @@ import '@/assets/iconfont/iconfont.css'
 
 Vue.use(vueParticles)
 Vue.use(Vcomp)
-
+Vue.use(ElementUI);
 Vue.config.productionTip = false
 Vue.prototype.$axios = axios;
 Vue.prototype.$echarts = echarts;
@@ -33,3 +36,6 @@ new Vue({
   store,
   render: h => h(App),
 }).$mount('#app')
+
+
+

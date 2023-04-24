@@ -38,7 +38,7 @@ import distribution from './companySummary/distribution' // 客户分布
 import history from './companySummary/history' // 发展历程
 
 import littleBar from "./bars"
-
+import startForm from "./form"
 const components = {
   bgAnimation,
   modal,
@@ -73,7 +73,8 @@ const components = {
   distribution,
   history,
 
-  littleBar
+  littleBar,
+  startForm
   
 };
 

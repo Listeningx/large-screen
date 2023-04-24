@@ -60,28 +60,19 @@
         </div>
 
         <div class="item center">
-          <!-- <div class="resume">
-            <div class="resume-hd">
-              <ul>
-                <li>
-                  <countTo :startVal='startVal' :endVal='490' :duration='6000' separator=""></countTo>
-                </li>
-                <li>
-                  <countTo :startVal='startVal' :endVal='75' :duration='6000' separator=""></countTo>
-                </li>
-                <li>
-                  <countTo :startVal='startVal' :endVal='bus_num' :duration='6000' separator=""></countTo>
-                </li>
-              </ul>
-            </div>
-            <div class="resume-bd">
-              <ul>
-                <li>电网总功率（单位：千瓦）</li>
-                <li>电网负载百分比（单位：%）</li>
-                <li>总线数量</li>
-              </ul>
-            </div>
-          </div> -->
+          <div class="resume">
+                  <el-button type="primary" @click="stop" style="position:relative;top:100px;z-index=10000">停止模拟</el-button>
+
+          </div> 
+
+   <el-dialog
+  title="选择"
+  :visible.sync="dialogVisible"
+  width="30%"
+  center>
+          <startForm :getEchart="getEchart" :dialogVisible="dialogVisible"/>
+</el-dialog>
+    
           <div class="map">
             <div class="chart" id="chart_map" height="100%"></div>
             <div class="map1"></div>
@@ -119,10 +110,10 @@
       </VueDragResize>
 
         </div>
+
       </section>
   
     </div>
-    
   </div>
 </template>
 
@@ -133,13 +124,15 @@ import countTo from 'vue-count-to'
 
 import topo from "@/assets/js/grid_top_struct.json"
 import VueDragResize from 'vue-drag-resize'
+import startForm from "../components/form.vue"
 
 
 export default {
   name: 'Brand',
   components: {
     countTo,
-    VueDragResize
+    VueDragResize,
+    startForm
   },
   data() {
   	return {
@@ -152,6 +145,7 @@ export default {
       startVal: 0,
       geoCoordMap: {},
       bus_num:427,
+      dialogVisible: true
      
   	}
   },
@@ -167,7 +161,7 @@ export default {
     }, 1000 * 60 * 60)
 
     this.nowTimes();
-    this.getEchart();
+    // this.getEchart();
   },
   methods: {
     timeFormate(timeStamp) { //显示当前时间
@@ -225,6 +219,11 @@ export default {
       }).catch(err => {
         console.log(err)
       })
+    },
+    stop(){
+      this.dialogVisible = true;
+      let myChart = echarts.getInstanceByDom(document.getElementById('chart_map'));
+      myChart.clear();
     },
     convertData(data) { // 拓扑图数据转换
       var num = 30;
