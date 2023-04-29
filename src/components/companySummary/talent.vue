@@ -28,19 +28,13 @@ export default {
       let myChart = echarts.init(document.getElementById('chart_left2'));
       let scaleData = [{
         name: '太阳能',
-        value: 5
+        value: 1025
       },{
         name: '风力',
-        value: 10
+        value: 2352
       },{
         name: '火力',
-        value: 10
-      },{
-        name: '水力',
-        value: 10
-      },{
-        name: '核能',
-        value: 5
+        value: 876
       }];
       let rich = {
         white: {
@@ -59,7 +53,7 @@ export default {
           },
           color: 'rgba(0, 0, 0, 0)',
           borderColor: 'rgba(0, 0, 0, 0)',
-          borderWidth: 0
+          borderWidth: 10
         }
       };
       let data = [];
@@ -75,30 +69,46 @@ export default {
               borderColor: color[i],
               shadowColor: color[i]
             }
-          }
+          },
+          tooltip:{
+           
+            position:'top',
+          },
+     
         }, {
-          value: 2,
+          value: 1,
           name: '',
           itemStyle: placeHolderStyle
         });
+        //!!!这里用空白占位置，表示圈圈中没有内容的地方
       }
 
       let option = {
+        tooltip: {
+          trigger: 'item',
+        },
         series: [{
           name: '',
           type: 'pie',
           clockWise: false,
           center: ['50%', '50%'],
-          hoverAnimation: false,
-          radius:['15%','30%'],
+          hoverAnimation: true,
+          radius:['60%','90%'],
           itemStyle: {
             normal: {
-              label: {
-                show: true,
-                position: 'outside',
-                color: '#ddd',
-                edgeDistance:10,
-                formatter: (params) => {
+              borderRadius: 4,
+        borderColor: '#fff',
+        borderWidth: 0.1,
+            }
+          },
+          labelLine:{
+            show:false,
+          },
+          label:
+          {
+            show:false,
+            position:'center',
+            formatter: (params) => {
                   let percent = 0;
                   let total = 0;
                   for (let i = 0; i < scaleData.length; i++) {
@@ -111,17 +121,24 @@ export default {
                     return '';
                   }
                 },
-                rich: rich
+            rich: rich,
+          },
+          data: data,
+          emphasis: {
+            label: {
+                show: true,
+                // position: 'center',
+                color: '#ddd',
+                edgeDistance:10,
+                fontSize: 30,
+          fontWeight: 'bold'
               },
               labelLine: {
-                length: 25,
-                length2: 5,
-                show: true,
-                color: '#00ffff'
-              }
-            }
+                show:false
+              },
+              
           },
-          data: data
+    
         }]
       }
 

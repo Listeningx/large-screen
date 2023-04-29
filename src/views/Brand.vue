@@ -56,12 +56,13 @@
             <div class="panel-footer"></div>
           </div>
       </VueDragResize>
-<button class="loginBtn" style="position:absolute;top:30px;left:30px;z-index=1000" @click.stop="jump2map">跳转</button>
+<!-- <button class="loginBtn" style="position:absolute;top:30px;left:30px;z-index=1000" @click.stop="jump2map">跳转</button> -->
         </div>
 
         <div class="item center">
           <div class="resume">
-                  <el-button type="primary" @click="stop" style="position:relative;top:100px;z-index=10000">停止模拟</el-button>
+                  <el-button type="primary" @click="stop" style="position:absolute;top:90px;z-index=10000">停止模拟</el-button>
+                  <timeSlider />
 
           </div> 
 
@@ -125,14 +126,16 @@ import countTo from 'vue-count-to'
 import topo from "@/assets/js/grid_top_struct.json"
 import VueDragResize from 'vue-drag-resize'
 import startForm from "../components/form.vue"
-
-
+import timeSlider from "../components/timeSlider.vue"
+import * as echarts from 'echarts';
+import * as axios from 'axios'
 export default {
   name: 'Brand',
   components: {
     countTo,
     VueDragResize,
-    startForm
+    startForm,
+    timeSlider
   },
   data() {
   	return {
@@ -251,8 +254,9 @@ export default {
         });
 
           res.links.push({
-            source:"gen_" + id[1],
-            target:key.toString(),
+            //为使线都是蓝色，交换起止点，让source是总线结点，target是发电机
+            target:"gen_" + id[1],
+            source:key.toString(),
       value:100,
 
           })
@@ -305,12 +309,21 @@ export default {
         }
       });
       for (let branch of edges.values()) {
+        let color = '';
+        if(num >= 90){
+          color = 'red'
+        }else if(num >= 70){
+          color = 'orange'
+        }else{
+          color = '#05f8f8'
+        }
         res.links.push({
           source:branch.or,
           target:branch.ex,
           lineStyle:{
-
+            color:color
           },
+         
           label:{
             show:true,
             formatter:num+"%",
@@ -341,8 +354,9 @@ export default {
     },
     getEchart() { // 初始化地图数据
       let myChart = echarts.init(document.getElementById('chart_map'),'dark');
-
+      let sync = 0;//用于同步
       myChart.showLoading();
+  
       let topo_data = {
         bus_gen:{},bus_load:{},bus_branch:{}
       }
@@ -357,6 +371,8 @@ export default {
       tmp = tmp.replace(/\'/g, "\"");
       tmp = JSON.parse(tmp);
       topo_data.bus_gen = tmp
+        sync++;
+        console.log("sync="+ sync)
       }).catch((err) => {
         /* 异常信息 */
         console.log(err);
@@ -374,6 +390,9 @@ export default {
       tmp = tmp.replace(/\'/g, "\"");
       tmp = JSON.parse(tmp);
       topo_data.bus_load = tmp
+      sync++;
+      console.log("sync="+ sync)
+
       }).catch((err) => {
         /* 异常信息 */
         console.log(err);
@@ -392,20 +411,28 @@ export default {
       tmp = tmp.replace(/\'/g, "\"");
       tmp = JSON.parse(tmp);
       topo_data.bus_branch = tmp
-    
+      sync++;
+      console.log("sync="+ sync)
+
       }).catch((err) => {
         /* 异常信息 */
         console.log(err);
        console.log("res_err");
 
       });
+
 console.log("topo_data")
+
 console.log(topo_data);
-console.log(topo)
 
 
-//todo:修改topo的格式
-var graph = this.convertData(topo);
+
+//todo:修改topo的格式,在接收数据后执行
+setTimeout(()=>{
+  var graph
+  if(sync >= 3){
+    graph = this.convertData(topo_data);
+  }
 
   myChart.hideLoading();
   graph.nodes.forEach(function (node) {
@@ -415,8 +442,6 @@ var graph = this.convertData(topo);
   });
   var option = {
     title: {
-      // text: 'Les Miserables',
-      // subtext: 'Default layout',
       top: 'bottom',
       left: 'right'
     },
@@ -468,36 +493,36 @@ var graph = this.convertData(topo);
   };
   myChart.setOption(option);
 
-  setInterval(function () {
-console.log("setinteeeeeeeerval")
-  var source = "bus-"+ Math.round((97) * Math.random())+"100100";
-  var target = "bus-"+ Math.round((97) * Math.random())+"100100";
-  console.log(source)
-  if (source !== target) {
-    graph.links.push( {
-      source:source,
-      target:target,
-      value:200,
-      label:{
-            show:true,
-            formatter:(Math.round((97) * Math.random()) + 1 )+"%",
-            color:"#fff",
-            textBorderColor:"#000",
-          }
-        });
-  }
-  myChart.setOption({
-    series: [
-      {
-        roam: true,
-        data: graph.nodes,
-        edges: graph.links
-      }
-    ]
-  });
-  // console.log('nodes: ' + data.length);
-  // console.log('links: ' + data.length);
-}, 5000);
+//   setInterval(function () {
+// console.log("setinteeeeeeeerval")
+//   var source = "bus-"+ Math.round((97) * Math.random())+"100100";
+//   var target = "bus-"+ Math.round((97) * Math.random())+"100100";
+//   console.log(source)
+//   if (source !== target) {
+//     graph.links.push( {
+//       source:source,
+//       target:target,
+//       value:200,
+//       label:{
+//             show:true,
+//             formatter:(Math.round((97) * Math.random()) + 1 )+"%",
+//             color:"#fff",
+//             textBorderColor:"#000",
+//           }
+//         });
+//   }
+//   myChart.setOption({
+//     series: [
+//       {
+//         roam: true,
+//         data: graph.nodes,
+//         edges: graph.links
+//       }
+//     ]
+//   });
+//   // console.log('nodes: ' + data.length);
+//   // console.log('links: ' + data.length);
+// }, 5000);
 
 option && myChart.setOption(option);
 
@@ -505,6 +530,8 @@ option && myChart.setOption(option);
       window.addEventListener("resize", () => {
         myChart.resize();
       });
+},1000)
+
     }
   },
   beforeDestroy() {
@@ -617,7 +644,7 @@ option && myChart.setOption(option);
           .resume {
             background: rgba(101, 132, 226, 0.1);
             padding: 0.1875rem;
-            opacity: 0.6;
+            // opacity: 0.6;
             .resume-hd {
               position: relative;
               border: 1px solid rgba(25, 186, 139, 0.17);
@@ -704,21 +731,26 @@ option && myChart.setOption(option);
           opacity: 0.3;
         }
         .map {
-            position: absolute;
-            top:0%;
-            left:0;
-          // position: relative;
-          // height: 13.125rem;
+            // position: absolute;
+            // top:0%;
+            // left:0;
+          position: relative;
+          height: 13.125rem;
           .chart {
-            position: fixed;
-            top: 20%;
-            left: 0%;
-            z-index: 1;
-            height: 100%;
+            // position: fixed;
+            // top: 20%;
+            // left: 0%;
+            // z-index: 1;
+            // // height: 100%;
             // height: 13.125rem;
+            // width: 100%;
+            // // opacity: 0.6;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 5;
+            height: 10.125rem;
             width: 100%;
-            // opacity: 0.6;
-
           }
           .map1 {
             @extend %map-style;

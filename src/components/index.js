@@ -39,6 +39,7 @@ import history from './companySummary/history' // 发展历程
 
 import littleBar from "./bars"
 import startForm from "./form"
+import timeSlider from "./timeSlider"
 const components = {
   bgAnimation,
   modal,
@@ -74,7 +75,8 @@ const components = {
   history,
 
   littleBar,
-  startForm
+  startForm,
+  timeSlider,
   
 };
 

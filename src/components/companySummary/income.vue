@@ -28,7 +28,9 @@ export default {
       let myChart = echarts.init(document.getElementById('chart_left3'));
       let data = {
         city: ['9:20', '9:30', '9:40', '9:50', '10:00', '10:10'],
-        num: ['0', '36', '85', '-29', '-48', '-30']
+        num: ['895', '1121', '985', '1290', '848', '1830'],
+        num2:['1272','1001','912','890','954','976'],
+        num3:['894','1232','908','799','989','1176']
       }
 
       let option = {
@@ -56,9 +58,11 @@ export default {
               }
             },
           },
-          formatter: (value) => {
-            return value[0].name + '总功率：<br>' + value[0].value + 'kW'; 
-          }
+          // formatter: (value) => {
+            // console.log("value = "+value)
+            // console.log(value)
+            // return value[0].name + '总功率：<br>' + value[0].value + 'kW' +value[1].value; 
+          // }
         },
         grid: {
           top: '5%',
@@ -91,8 +95,8 @@ export default {
           data: data.city
         }],
         yAxis: [{
-          min: -100,
-          max: 100,
+          min: 500,
+          max: 1500,
           splitLine: {
             show: false,
             lineStyle: {
@@ -116,7 +120,7 @@ export default {
           },
         }],
         series: [{
-          name: '',
+          name: '太阳能',
           type: 'line',
           symbol: 'circle', // 默认是空心圆（中间是白色的），改成实心圆
           showAllSymbol: true,
@@ -128,25 +132,25 @@ export default {
             borderColor: 'rgba(0,0,0,.4)',
           },
           itemStyle: {
-            color: "rgba(14,30,73,1)",
-            borderColor: "#646ace",
-            borderWidth: 2
+            // color: "rgba(14,30,73,1)",
+            // borderColor: "#646ace",
+            // borderWidth: 2
           },
-          label: {
-            normal: {
-              show: true,
-              position: 'top',
-              formatter: [
-                ' {a|{c}}',
-              ].join(','),
-              rich: {
-                a: {
-                  color: '#fff',
-                  align: 'center',
-                },
-              }
-            }
-          },
+          // label: {
+          //   normal: {
+          //     show: true,
+          //     position: 'top',
+          //     formatter: [
+          //       ' {a|{c}}',
+          //     ].join(','),
+          //     rich: {
+          //       a: {
+          //         color: '#fff',
+          //         align: 'center',
+          //       },
+          //     }
+          //   }
+          // },
           smooth: true,
           areaStyle: { //区域填充样式
             normal: {
@@ -163,7 +167,76 @@ export default {
             }
           },
           data: data.num
-        }]
+        },
+        {
+          name: '火力',
+          type: 'line',
+          symbol: 'circle', // 默认是空心圆（中间是白色的），改成实心圆
+          showAllSymbol: true,
+          symbolSize: 8,
+          lineStyle: {
+            normal: {
+              color: '#7c80f4', // 线条颜色
+            },
+            borderColor: 'rgba(0,0,0,.4)',
+          },
+          itemStyle: {
+            // color: "rgba(14,30,73,1)",
+            // borderColor: "#646ace",
+            // borderWidth: 2
+          },
+          smooth: true,
+          areaStyle: { //区域填充样式
+            normal: {
+              //线性渐变，前4个参数分别是x0,y0,x2,y2(范围0~1);相当于图形包围盒中的百分比。如果最后一个参数是‘true’，则该四个值是绝对像素位置。
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                offset: 0,
+                color: "rgba(124, 128, 244,.3)"
+              },{
+                offset: 1,
+                color: "rgba(124, 128, 244, 0)"
+              }], false),
+              shadowColor: 'rgba(53,142,215, 0.9)', //阴影颜色
+              shadowBlur: 20 //shadowBlur设图形阴影的模糊大小。配合shadowColor,shadowOffsetX/Y, 设置图形的阴影效果。
+            }
+          },
+          data: data.num2
+        },
+        {
+          name: '风力',
+          type: 'line',
+          symbol: 'circle', // 默认是空心圆（中间是白色的），改成实心圆
+          showAllSymbol: true,
+          symbolSize: 8,
+          lineStyle: {
+            normal: {
+              color: '#7c80f4', // 线条颜色
+            },
+            borderColor: 'rgba(0,0,0,.4)',
+          },
+          itemStyle: {
+            // color: "rgba(14,30,73,1)",
+            // borderColor: "#646ace",
+            // borderWidth: 2
+          },
+          smooth: true,
+          areaStyle: { //区域填充样式
+            normal: {
+              //线性渐变，前4个参数分别是x0,y0,x2,y2(范围0~1);相当于图形包围盒中的百分比。如果最后一个参数是‘true’，则该四个值是绝对像素位置。
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                offset: 0,
+                color: "rgba(124, 128, 244,.3)"
+              },{
+                offset: 1,
+                color: "rgba(124, 128, 244, 0)"
+              }], false),
+              shadowColor: 'rgba(53,142,215, 0.9)', //阴影颜色
+              shadowBlur: 20 //shadowBlur设图形阴影的模糊大小。配合shadowColor,shadowOffsetX/Y, 设置图形的阴影效果。
+            }
+          },
+          data: data.num3
+        }
+      ]
       }
 
       myChart.setOption(option, true);

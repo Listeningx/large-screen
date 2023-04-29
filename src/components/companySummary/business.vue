@@ -32,6 +32,7 @@ export default {
     this.getEchartLeft1();
   },
   methods: {
+    
     getEchartLeft1() {
       setTimeout(()=>{
       // 实例化对象
@@ -148,7 +149,7 @@ export default {
           splitLine: {
             show: false
           },
-          data: top10CityData.reverse()
+          // data: top10CityData.reverse()
         }],
         series: [{
           name: '',
@@ -172,7 +173,26 @@ export default {
           }
         }]
       };
-
+      function run(data) {
+        for (var i = 0; i < data.length; ++i) {
+          if (Math.random() > 0.9) {
+            data[i].value += Math.round(Math.random() * 2000);
+          } else {
+            data[i].value += Math.round(Math.random() * 200);
+          }
+        }
+        myChart.setOption({
+          series: [
+            {
+              type: 'bar',
+              data
+            }
+          ]
+        });
+      }
+      setInterval(function () {
+        run(lineY);
+      }, 3000);
       // 把配置给实例对象
      
         myChart.setOption(option, true);
@@ -185,7 +205,8 @@ export default {
   },
   beforeDestroy() {
     
-  }
+  },
+ 
 };
 </script>
 
