@@ -92,14 +92,21 @@
           </div>
         </VueDragResize>
 
-      <VueDragResize :isActive="true"  :isResizable="true"  :z="999" :x="1290" :y=325>
-
+          <VueDragResize 
+          :isActive="true" 
+          :w="200" 
+          :h="200" 
+          :isResizable="true"  :z="999" :x="1290" :y=325
+          v-on:resizing="resize_r2" 
+          v-on:dragging="resize_r2">
           <div class="panel">
-            <h2>异常分析</h2>
-            <distribution />
+            <h2>奖励指标</h2>
+            <distribution :wi="width_r2" :he="height_r2" />
+            <!-- <p>{{ top }} х {{ left }} </p>
+            <p>{{ width }} х {{ height }}</p> -->
             <div class="panel-footer"></div>
           </div>
-        </VueDragResize>
+          </VueDragResize>
 
       <VueDragResize :isActive="true"  :isResizable="true"  :z="999" :x="1290" :y="580">
 
@@ -129,6 +136,7 @@ import startForm from "../components/form.vue"
 import timeSlider from "../components/timeSlider.vue"
 import * as echarts from 'echarts';
 import * as axios from 'axios'
+import { ref, onMounted } from '@vue/composition-api';
 export default {
   name: 'Brand',
   components: {
@@ -148,8 +156,11 @@ export default {
       startVal: 0,
       geoCoordMap: {},
       bus_num:427,
-      dialogVisible: true
-     
+      dialogVisible: true,
+      width_r2: 200,
+      height_r2: 200,
+      top_r2: 0,
+      left_r2: 0
   	}
   },
   computed: {
@@ -165,8 +176,15 @@ export default {
 
     this.nowTimes();
     // this.getEchart();
+
   },
   methods: {
+    resize_r2 (newRect) {
+      this.width_r2 = newRect.width;
+      this.height_r2 = newRect.height;
+      this.top_r2 = newRect.top;
+      this.left_r2 = newRect.left;
+    },
     timeFormate(timeStamp) { //显示当前时间
       let newDate = new Date(timeStamp);
       let year = newDate.getFullYear();
@@ -776,7 +794,7 @@ option && myChart.setOption(option);
         }
         .panel {
           position: relative;
-          height: 3.875rem;
+          height: height;
           border: 1px solid rgba(25, 186, 139, 0.17);
           background: rgba(255, 255, 255, 0.04) url(../assets/img/brand/line.png);
           padding: 0 0.1875rem 0;
