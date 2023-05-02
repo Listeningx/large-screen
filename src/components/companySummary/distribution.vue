@@ -29,7 +29,7 @@ export default {
     },
   },
   watch: {
-    wi(newVal, oldVal) {
+    wi(newVal, oldVal ) {
       console.log('wi changed:', newVal, oldVal);
       // perform any side effects here, such as updating the UI
       let myChart = echarts.getInstanceByDom(document.getElementById('chart_right2'));
