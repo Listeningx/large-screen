@@ -6,13 +6,37 @@
 
 <template>
   <div class="income-container"> 
-    <div class="chart" id="chart_left3"></div>  
+    <div class="chart" :style="{ height: he + 'px', width: wi + 'px' }" id="chart_left3"></div>  
   </div>
 </template>
 
 <script>
 export default {
   name: "income",
+  props: {
+    wi: {
+      type: Number,
+      required: true,
+    },
+    he: {
+      type: Number,
+      required: true,
+    },
+  },
+  watch: {
+    wi(newVal, oldVal ) {
+      console.log('wi changed:', newVal, oldVal);
+      // perform any side effects here, such as updating the UI
+      let myChart = echarts.getInstanceByDom(document.getElementById('chart_left3'));
+      myChart.resize();
+    },
+    he(newVal, oldVal) {
+      console.log('he changed:', newVal, oldVal);
+      // perform any side effects here, such as updating the UI
+      let myChart = echarts.getInstanceByDom(document.getElementById('chart_left3'));
+      myChart.resize();
+    },
+  },
   data() {
     return {
       

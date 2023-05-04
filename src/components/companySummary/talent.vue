@@ -6,19 +6,58 @@
 
 <template>
   <div class="talent-container"> 
-    <div class="chart" id="chart_left2"></div>   
+    <div class="chart" :style="{ height: he + 'px', width: wi + 'px' }" id="chart_left2"></div>   
   </div>
 </template>
 
 <script>
 export default {
   name: "talent",
+  props: {
+    wi: {
+      type: Number,
+      required: true,
+    },
+    he: {
+      type: Number,
+      required: true,
+    },
+  },
+  watch: {
+    wi(newVal, oldVal ) {
+      console.log('wi changed:', newVal, oldVal);
+      // perform any side effects here, such as updating the UI
+      let myChart = echarts.getInstanceByDom(document.getElementById('chart_left2'));
+      myChart.resize();
+    },
+    he(newVal, oldVal) {
+      console.log('he changed:', newVal, oldVal);
+      // perform any side effects here, such as updating the UI
+      let myChart = echarts.getInstanceByDom(document.getElementById('chart_left2'));
+      myChart.resize();
+    },
+  },
   data() {
     return {
-      
+      gen:[],
     }
   },
   mounted() {
+    this.$axios({
+      method: "get",
+      url: "/api/grid/generate" 
+    })
+      .then((res) => {
+        /* res.data - 返回值 */
+       console.log("generate_suc");
+        this.gen = res.data
+        console.log(this.gen)
+      }).catch((err) => {
+        /* 异常信息 */
+        console.log(err);
+       console.log("gen_err");
+
+    })
     this.getEchartLeft2();
   },
   methods: {
@@ -60,7 +99,8 @@ export default {
       let color=['#00ffff', '#00cfff', '#006ced', '#ffe000', '#ffa800', '#ff5b00', '#ff3000']
       for (let i = 0; i < scaleData.length; i++) {
         data.push({
-          value: scaleData[i].value,
+          // value: scaleData[i].value,
+          value: this.gen[i],
           name: scaleData[i].name,
           itemStyle: {
             normal: {
@@ -75,11 +115,13 @@ export default {
             position:'top',
           },
      
-        }, {
-          value: 1,
-          name: '',
-          itemStyle: placeHolderStyle
-        });
+        }, 
+        // {
+        //   value: 1,
+        //   name: '',
+        //   itemStyle: placeHolderStyle
+        // }
+        );
         //!!!这里用空白占位置，表示圈圈中没有内容的地方
       }
 
@@ -111,8 +153,8 @@ export default {
             formatter: (params) => {
                   let percent = 0;
                   let total = 0;
-                  for (let i = 0; i < scaleData.length; i++) {
-                    total += scaleData[i].value;
+                  for (let i = 0; i < data.length; i++) {
+                    total += data[i].value;
                   }
                   percent = ((params.value / total) * 100).toFixed(0);
                   if (params.name !== '') {
@@ -143,6 +185,45 @@ export default {
       }
 
       myChart.setOption(option, true);
+      function run(data) {
+        for (var i = 0; i < data.length; ++i) {
+          if (Math.random() > 0.9) {
+            data[i].value += Math.round(Math.random() * 200);
+          } else {
+            data[i].value += Math.round(Math.random() * 2000);
+          }
+        }
+        myChart.setOption({
+          series: [
+            {
+              type: 'pie',
+              data,
+              label:
+              {
+                show:false,
+                position:'center',
+                formatter: (params) => {
+                      let percent = 0;
+                      let total = 0;
+                      for (let i = 0; i < data.length; i++) {
+                        total += data[i].value;
+                      }
+                      percent = ((params.value / total) * 100).toFixed(0);
+                      if (params.name !== '') {
+                        return params.name + '\n{white|'  + percent + '%}';
+                      } else {
+                        return '';
+                      }
+                    },
+                rich: rich,
+              },
+            }
+          ]
+        });
+      }
+      setInterval(function () {
+        run(data);
+      }, 3000);
       window.addEventListener('resize', () => {
         myChart.resize();
       });

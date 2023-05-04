@@ -13,6 +13,11 @@ import '@/assets/styles/base.scss'
 import '@/assets/styles/common.scss'
 import '@/assets/iconfont/iconfont.css'
 
+import axios from 'axios'
+import VueAxios from "vue-axios";
+ 
+Vue.use(VueAxios, axios)
+
 Vue.use(vueParticles)
 Vue.use(Vcomp)
 Vue.use(ElementUI);

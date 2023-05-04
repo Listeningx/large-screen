@@ -1,6 +1,6 @@
 <template>
     <div >
-      <span class="demonstration">时间戳</span>
+      <span class="demonstration">选择拓扑图模拟时间</span>
       <el-slider
         v-model="value1" max = 100 :format-tooltip="formatTooltip"
         :step="10">

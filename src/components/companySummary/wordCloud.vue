@@ -7,7 +7,12 @@
 <template>
   <div class="word-container"> 
     <!-- <div class="chart" id="chart_right1"></div> -->
-    <div id="information">{{warning}}</div>
+
+    <div :style="{ height: he + 'px', width: wi + 'px' }" >
+                  <el-button type="primary" @click="stop" style="position:absolute;top:90px;z-index=10000">停止模拟</el-button>
+                  <!-- <timeSlider /> -->
+
+          </div> 
   </div>
 </template>
 
@@ -16,6 +21,34 @@ import '@/assets/js/echarts-wordcloud.min'
 
 export default {
   name: "wordCloud",
+  props: {
+    wi: {
+      type: Number,
+      required: true,
+    },
+    he: {
+      type: Number,
+      required: true,
+    },
+    stop:{
+      type:Function,
+      required:true,
+    }
+  },
+  watch: {
+    wi(newVal, oldVal ) {
+      console.log('wi changed:', newVal, oldVal);
+      // perform any side effects here, such as updating the UI
+      let myChart = echarts.getInstanceByDom(document.getElementById('chart_left1'));
+      myChart.resize();
+    },
+    he(newVal, oldVal) {
+      console.log('he changed:', newVal, oldVal);
+      // perform any side effects here, such as updating the UI
+      let myChart = echarts.getInstanceByDom(document.getElementById('chart_left1'));
+      myChart.resize();
+    },
+  },
   data() {
     return {
       timer: null,
@@ -29,6 +62,7 @@ export default {
     // }, 5000)
   },
   methods: {
+
     getEchartRight1() {
       this.warning = '当前电网总负载为75%，处于较安全状态';
       let myChart = echarts.init(document.getElementById('chart_right1'));

@@ -7,10 +7,8 @@
 <template>
   
     <div class="business-container"> 
-      <!-- <VueDragResize :isActive="true"  :isResizable="true"  :z="999" :x="18" :y="68"> -->
 
-      <div class="chart" id="chart_left1"></div> 
-    <!-- </VueDragResize> -->
+      <div class="chart" :style="{ height: he + 'px', width: wi + 'px' }" id="chart_left1"></div> 
 
   </div>
 
@@ -23,14 +21,54 @@ export default {
   components: {
       VueDragResize
     },
+    props: {
+    wi: {
+      type: Number,
+      required: true,
+    },
+    he: {
+      type: Number,
+      required: true,
+    },
+  },
+  watch: {
+    wi(newVal, oldVal ) {
+      console.log('wi changed:', newVal, oldVal);
+      // perform any side effects here, such as updating the UI
+      let myChart = echarts.getInstanceByDom(document.getElementById('chart_left1'));
+      myChart.resize();
+    },
+    he(newVal, oldVal) {
+      console.log('he changed:', newVal, oldVal);
+      // perform any side effects here, such as updating the UI
+      let myChart = echarts.getInstanceByDom(document.getElementById('chart_left1'));
+      myChart.resize();
+    },
+  },
   data() {
     return {
-      
+      flow:[],
     }
   },
   mounted() {
-    this.getEchartLeft1();
-  },
+    this.$axios({
+      method: "get",
+      url: "/api/grid/flow" 
+    })
+      .then((res) => {
+        /* res.data - 返回值 */
+       console.log("flow_suc");
+        this.flow = res.data
+        console.log(this.flow)
+      }).catch((err) => {
+        /* 异常信息 */
+        console.log(err);
+       console.log("flow_err");
+
+  })
+  this.getEchartLeft1();
+
+},
   methods: {
     
     getEchartLeft1() {
@@ -43,7 +81,9 @@ export default {
       }
 
       let top10CityList = charts.cityList;
-      let top10CityData = charts.cityData;
+      // let top10CityData = charts.cityData;
+      let top10CityData = this.flow;
+
       let color = ['rgba(14,109,236', 'rgba(255,91,6', 'rgba(100,255,249', 'rgba(248,195,248', 'rgba(110,234,19', 'rgba(255,168,17', 'rgba(218,111,227'];
 
       let lineY = [];

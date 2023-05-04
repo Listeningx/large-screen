@@ -29,30 +29,33 @@
         <div class="item left">
 
 
-      <VueDragResize :isActive="true"  :isResizable="true"  :z="999" :x="18" :y="68">
+      <VueDragResize :isActive="true"  :isResizable="true"    v-on:resizing="resize_l1" 
+          v-on:dragging="resize_l1" :z="999" :x="18" :y="68">
         <div class="panel">
 
             <h2>电能流向</h2>
-            <business />
+            <business :wi="width_l1" :he="height_l1" />
             <div class="panel-footer"></div>
     </div>
 
       </VueDragResize>
    
 
-      <VueDragResize :isActive="true"  :isResizable="true"  :z="999" :x="18"  :y=325>
+      <VueDragResize :isActive="true"  :isResizable="true"    v-on:resizing="resize_l2" 
+          v-on:dragging="resize_l2" :z="999" :x="18"  :y=325>
 
           <div class="panel">
             <h2>发电机功率占比</h2>
-            <talent />
+            <talent  :wi="width_l2" :he="height_l2"/>
             <div class="panel-footer"></div>
           </div>
       </VueDragResize>
-      <VueDragResize :isActive="true"  :isResizable="true"  :z="999" :x="18" :y="580">
+      <VueDragResize :isActive="true"  :isResizable="true"    v-on:resizing="resize_l3" 
+          v-on:dragging="resize_l3" :z="999" :x="18" :y="580">
 
           <div class="panel">
             <h2>功率曲线</h2>
-            <income />
+            <income  :wi="width_l3" :he="height_l3"/>
             <div class="panel-footer"></div>
           </div>
       </VueDragResize>
@@ -60,11 +63,7 @@
         </div>
 
         <div class="item center">
-          <div class="resume">
-                  <el-button type="primary" @click="stop" style="position:absolute;top:90px;z-index=10000">停止模拟</el-button>
-                  <timeSlider />
-
-          </div> 
+         
 
    <el-dialog
   title="选择"
@@ -83,20 +82,13 @@
         </div>
 
         <div class="item right">
-      <VueDragResize :isActive="true"  :isResizable="true"  :z="999" :x="1290" :y=68>
 
-          <div class="panel">
-            <h2>安全评估</h2>
-            <wordCloud />
-            <div class="panel-footer"></div>
-          </div>
-        </VueDragResize>
-
+          
           <VueDragResize 
           :isActive="true" 
           :w="200" 
           :h="200" 
-          :isResizable="true"  :z="999" :x="1290" :y=325
+          :isResizable="true"  :z="999" :x="1290" :y=68
           v-on:resizing="resize_r2" 
           v-on:dragging="resize_r2">
           <div class="panel">
@@ -108,11 +100,22 @@
           </div>
           </VueDragResize>
 
-      <VueDragResize :isActive="true"  :isResizable="true"  :z="999" :x="1290" :y="580">
+      <VueDragResize :isActive="true"  :isResizable="true"    v-on:resizing="resize_r1" 
+          v-on:dragging="resize_r1" :z="999" :x="1290" :y=650  >
 
           <div class="panel">
-            <h2>电网关键事件</h2>
-            <history />
+            <!-- <h2>安全评估</h2> -->
+            <wordCloud  :wi="width_r1" :he="height_r1" :stop="stop"/>
+            <div class="panel-footer"></div>
+          </div>
+        </VueDragResize>
+
+      <VueDragResize :isActive="true"  :isResizable="true"    v-on:resizing="resize_r3" 
+          v-on:dragging="resize_r3" :z="999" :x="1290" :y="340">
+
+          <div class="panel">
+            <h2>异常事件</h2>
+            <history  :wi="width_r3" :he="height_r3"/>
             <div class="panel-footer"></div>
           </div>
       </VueDragResize>
@@ -157,10 +160,38 @@ export default {
       geoCoordMap: {},
       bus_num:427,
       dialogVisible: true,
-      width_r2: 200,
-      height_r2: 200,
+
+      width_r2: 250,
+      height_r2: 250,
       top_r2: 0,
-      left_r2: 0
+      left_l2: 0,
+
+      width_l2: 200,
+      height_l2: 200,
+      top_l2: 0,
+      left_l2: 0,
+
+      width_l1: 200,
+      height_l1: 200,
+      top_l1: 0,
+      left_l1: 0,
+
+      width_l3: 200,
+      height_l3: 200,
+      top_l3: 0,
+      left_l3: 0,
+
+      width_r1: 300,
+      height_r1: 100,
+      top_r1: 0,
+      left_r1: 0,
+
+      width_r3: 200,
+      height_r3: 200,
+      top_r3: 0,
+      left_r3: 0,
+
+      sync:0
   	}
   },
   computed: {
@@ -184,6 +215,36 @@ export default {
       this.height_r2 = newRect.height;
       this.top_r2 = newRect.top;
       this.left_r2 = newRect.left;
+    },
+    resize_l1 (newRect) {
+      this.width_l1 = newRect.width;
+      this.height_l1 = newRect.height;
+      this.top_l1 = newRect.top;
+      this.left_l1 = newRect.left;
+    },
+    resize_l2 (newRect) {
+      this.width_l2 = newRect.width;
+      this.height_l2 = newRect.height;
+      this.top_l2 = newRect.top;
+      this.left_l2 = newRect.left;
+    },
+    resize_l3 (newRect) {
+      this.width_l3 = newRect.width;
+      this.height_l3 = newRect.height;
+      this.top_l3 = newRect.top;
+      this.left_l3 = newRect.left;
+    },
+    resize_r1 (newRect) {
+      this.width_r1 = newRect.width;
+      this.height_r1 = newRect.height;
+      this.top_r1 = newRect.top;
+      this.left_r1 = newRect.left;
+    },
+    resize_r3 (newRect) {
+      this.width_r3 = newRect.width;
+      this.height_r3 = newRect.height;
+      this.top_r3 = newRect.top;
+      this.left_r3 = newRect.left;
     },
     timeFormate(timeStamp) { //显示当前时间
       let newDate = new Date(timeStamp);
@@ -242,6 +303,7 @@ export default {
       })
     },
     stop(){
+      console.log("stop")
       this.dialogVisible = true;
       let myChart = echarts.getInstanceByDom(document.getElementById('chart_map'));
       myChart.clear();
@@ -251,7 +313,8 @@ export default {
       let res = {nodes:[],links:[]};
       console.log("convertdata")
 
-      let gens = data["bus_gen"];
+      let gens = data.bus_gen;
+      console.log(data)
         Reflect.ownKeys(gens).forEach(function(key){
           // console.log(key,gens[key]);
           res.nodes.push({
@@ -370,11 +433,7 @@ export default {
      console.log(res)
       return res;
     },
-    getEchart() { // 初始化地图数据
-      let myChart = echarts.init(document.getElementById('chart_map'),'dark');
-      let sync = 0;//用于同步
-      myChart.showLoading();
-  
+    getTopoInfo(){//更新拓扑图数据信息
       let topo_data = {
         bus_gen:{},bus_load:{},bus_branch:{}
       }
@@ -389,8 +448,8 @@ export default {
       tmp = tmp.replace(/\'/g, "\"");
       tmp = JSON.parse(tmp);
       topo_data.bus_gen = tmp
-        sync++;
-        console.log("sync="+ sync)
+        // sync++;
+        // console.log("sync="+ sync)
       }).catch((err) => {
         /* 异常信息 */
         console.log(err);
@@ -408,8 +467,8 @@ export default {
       tmp = tmp.replace(/\'/g, "\"");
       tmp = JSON.parse(tmp);
       topo_data.bus_load = tmp
-      sync++;
-      console.log("sync="+ sync)
+      // sync++;
+      // console.log("sync="+ sync)
 
       }).catch((err) => {
         /* 异常信息 */
@@ -429,8 +488,8 @@ export default {
       tmp = tmp.replace(/\'/g, "\"");
       tmp = JSON.parse(tmp);
       topo_data.bus_branch = tmp
-      sync++;
-      console.log("sync="+ sync)
+      // sync++;
+      // console.log("sync="+ sync)
 
       }).catch((err) => {
         /* 异常信息 */
@@ -439,18 +498,17 @@ export default {
 
       });
 
-console.log("topo_data")
+      console.log("topo_data")
 
-console.log(topo_data);
+      console.log(topo_data);
+      return topo_data;
+    },
 
-
-
-//todo:修改topo的格式,在接收数据后执行
-setTimeout(()=>{
-  var graph
-  if(sync >= 3){
-    graph = this.convertData(topo_data);
-  }
+    setTopoOption(graph){//设置拓扑图格式
+      let myChart = echarts.getInstanceByDom(document.getElementById('chart_map'));
+      // var graph
+  // if(sync >= 3){
+  // }
 
   myChart.hideLoading();
   graph.nodes.forEach(function (node) {
@@ -510,6 +568,22 @@ setTimeout(()=>{
     ]
   };
   myChart.setOption(option);
+    },
+
+    getEchart() { // 初始化地图数据
+      let myChart = echarts.init(document.getElementById('chart_map'),'dark');
+      // let sync = 0;//用于同步
+      myChart.showLoading();
+      var that = this
+      var methods = this.$options.methods
+      let topo_data = this.getTopoInfo();
+
+
+
+
+    //todo:修改topo的格式,在接收数据后执行
+    // setTimeout(()=>{
+    //   this.setTopoOption(topo_data);
 
 //   setInterval(function () {
 // console.log("setinteeeeeeeerval")
@@ -542,16 +616,32 @@ setTimeout(()=>{
 //   // console.log('links: ' + data.length);
 // }, 5000);
 
-option && myChart.setOption(option);
+ 
 
 
-      window.addEventListener("resize", () => {
-        myChart.resize();
-      });
-},1000)
+// }, 5000);
 
-    }
-  },
+setTimeout(function(){
+  // let topo_data = methods.getTopoInfo();
+
+    var graph = methods.convertData(topo_data);
+
+    methods.setTopoOption(graph);
+    setInterval(function(){
+      let topo_data = that.getTopoInfo();
+      setTimeout(()=>{
+        var graph = methods.convertData(topo_data);
+
+        methods.setTopoOption(graph);
+      },4000)
+    },5000);
+
+  },5000);
+
+
+
+    },
+ 
   beforeDestroy() {
     clearInterval(this.timer);
   },
@@ -560,9 +650,9 @@ option && myChart.setOption(option);
     this.$router.push({
           path: '/map'
          })
-  }
-}
-</script>
+  },
+  }}
+  </script>
 
 <style lang="scss" scoped>
 
@@ -767,7 +857,7 @@ option && myChart.setOption(option);
             top: 0;
             left: 0;
             z-index: 5;
-            height: 10.125rem;
+            height: 13.125rem;
             width: 100%;
           }
           .map1 {
