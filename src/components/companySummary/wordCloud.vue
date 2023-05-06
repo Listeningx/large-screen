@@ -10,11 +10,7 @@
 
     <div :style="{ height: he + 'px', width: wi + 'px' }" >
       <div>
-      <el-button type="primary" @click="jump2map" style="position:absolute;top:90px;left:-10px">跳转页面</el-button>
-      <el-button type="primary" @click="stop" style="position:absolute;top:90px;z-index=10000;left:90px">停止模拟</el-button>
-      <el-button type="primary" @click="stop" style="position:absolute;top:90px;z-index=10000;left:180px">重新开始</el-button>
-             
-      <!-- <timeSlider /> -->
+     
       </div>
           </div> 
   </div>

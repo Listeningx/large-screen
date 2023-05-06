@@ -24,6 +24,7 @@
       </header>
 
       <section class="mainbox">
+        <div class="item center">
 
         <div class="item left">
 
@@ -35,8 +36,7 @@
             <h2>电能流向</h2>
             <business :wi="width_l1" :he="height_l1" />
             <div class="panel-footer"></div>
-    </div>
-
+        </div>
       </VueDragResize>
    
 
@@ -61,50 +61,63 @@
 <!-- <button class="loginBtn" style="position:absolute;top:30px;left:30px;z-index=1000" @click.stop="jump2map">跳转</button> -->
         </div>
 
-        <div class="item center">
+        <!-- <div class="item center"> -->
          
           <div class="resume">
             <div class="resume-hd">
               <ul>
                 <li>
-                  <countTo :startVal='startVal' :endVal='490' :duration='6000' separator=""></countTo>
+                  <countTo :startVal='startVal' :endVal='one' :duration='6000' separator="" autoplay="true"></countTo>
                 </li>
                 <li>
-                  <countTo :startVal='startVal' :endVal='75' :duration='6000' separator=""></countTo>
+                  <countTo :startVal='startVal' :endVal='two' :duration='6000' separator="" autoplay="true"></countTo>
                 </li>
                 <li>
-                  <countTo :startVal='startVal' :endVal='3000' :duration='6000' separator=""></countTo>
+                  <countTo :startVal='startVal' :endVal='three' :duration='6000' separator="" autoplay="true"></countTo>
+                </li>
+                <li>
+                  <countTo :startVal='startVal' :endVal='four' :duration='6000' separator="" autoplay="true"></countTo>
+                </li>
+                <li>
+                  <countTo :startVal='startVal' :endVal='five' :duration='6000' separator="" autoplay="true"></countTo>
+                </li>
+                <li>
+                  <countTo :startVal='startVal' :endVal='six' :duration='6000' separator="" autoplay="true"></countTo>
                 </li>
               </ul>
             </div>
             <div class="resume-bd">
               <ul>
-                <li>公司总人数（单位：人）</li>
-                <li>技术人员占比（单位：%）</li>
-                <li>产品投资额（单位：万元）</li>
+                <li>电网运行费用</li>
+                <li>电压越限情况</li>
+                <li>无功出力越限情况</li>
+                <li>平衡机功率超标比例</li>
+                <li>新能源机组容量</li>
+                <li>线路越限情况</li>
               </ul>
             </div>
           </div>
-  <el-dialog
-  title="选择"
-  :visible.sync="dialogVisible"
-  width="30%"
-  center
- >
-          <startForm :getEchart="getEchart"  v-on:closeDialog="closeDialog"/>
-</el-dialog>
+                <el-dialog
+                title="选择"
+                :visible.sync="dialogVisible"
+                width="30%"
+                center
+              >
+                        <startForm :getEchart="getEchart"  v-on:closeDialog="closeDialog"/>
+              </el-dialog>
     
-          <div class="map">
+        <!-- </div> -->
+    
+        
+        <div class="map">
             <div class="chart" id="chart_map" height="100%"></div>
             <div class="map1"></div>
             <div class="map2"></div>
             <div class="map3"></div>
           </div>
-        </div>
-
         <div class="item right">
 
-          
+<!--           
           <VueDragResize 
           :isActive="true" 
           :w="200" 
@@ -115,11 +128,10 @@
           <div class="panel">
             <h2>奖励指标</h2>
             <distribution :wi="width_r2" :he="height_r2" />
-            <!-- <p>{{ top }} х {{ left }} </p>
-            <p>{{ width }} х {{ height }}</p> -->
+       
             <div class="panel-footer"></div>
           </div>
-          </VueDragResize>
+          </VueDragResize> -->
 
       <VueDragResize :isActive="true"  :isResizable="true"    v-on:resizing="resize_r1" 
           v-on:dragging="resize_r1" :z="999" :x="1290" :y=650  >
@@ -142,6 +154,7 @@
       </VueDragResize>
 
         </div>
+      </div>
 
       </section>
   
@@ -178,6 +191,13 @@ export default {
       imgSrc: '',
       weatcherData: {},
       startVal: 0,
+      one:0,
+      two:0,
+      three:0,
+      four:0,
+      five:0,
+      six:0,
+
       geoCoordMap: {},
       bus_num:427,
       dialogVisible: true,
@@ -351,18 +371,38 @@ export default {
         console.log("res_err");
         });
 
+        this.$axios({
+        method: "get",
+        url: "/grid/ld_p/"
+      })
+        .then((res) => {
+          /* res.data - 返回值 */
+        console.log("ld_p_suc");
+        ld_p = res.data;
+        }).catch((err) => {
+          /* 异常信息 */
+          console.log(err);
+        console.log("res_err");
+        });
+
+
         setTimeout(()=>{
-          let gen_p_cnt = 0;
+          let gen_p_cnt = 0,ld_p_cnt = 0;
           for(let node of graph.nodes){
             var tmp = node.name.split("_");
             if(tmp[0]=="gen"){
               node.gen_p = gen_p[gen_p_cnt++];
               
               node.tooltip = {
-                formatter:'机组有功出力：'+node.gen_p
+                formatter:node.name + '<br/>机组有功出力：'+node.gen_p
               }
               console.log(node.name)
               console.log(node)
+            }else if(tmp[0]=="ld"){
+              node.ld_p = ld_p[ld_p_cnt++]
+              node.tooltip = {
+                formatter:node.name + '<br/>负荷/储能有功：'+node.ld_p
+              }
             }
           }
         },2000)
@@ -743,13 +783,15 @@ setTimeout(function(){
 	  	}
 .brand-container {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   // height:13.125rem;
   background: #000;
   .wrap {
     background: url(../assets/img/brand/bg.jpg) no-repeat #000;
     background-size: cover;
+    width: 100vw;
+  height: 100vh;
     line-height: 1.15;
     header {
       position: relative;
@@ -805,23 +847,37 @@ setTimeout(function(){
     }
     
     .mainbox {
-      height: 13.125rem;
-      // height:100%;
+      // height: 13.125rem;
+      height:100vh;
       min-width: 1024px;
       max-width: 1920px;
       padding: 0.125rem 0.125rem 0;
       display: flex;
+      justify-content: center;
+      // align-items: center;
       .item {
         flex: 1;
+        // height: 100%;
+        // height:100vh;
+
         &.center {
-          flex: 5;//在这里调三栏占比
-          margin: 0 0.125rem 0.1rem;
-          overflow: hidden;
+          // flex: 5;//在这里调三栏占比
+          // margin: 0 0.125rem 0.1rem;
+          // overflow: hidden;
+          // display: flex;
+        height: 100%;
+
 
           .resume {
+          // flex: 0 0 60%;
+          position: absolute;
+  left: 20%;
+  right: 20%;
+  margin: 0 auto;
+  text-align: center; 
             background: rgba(101, 132, 226, 0.1);
             padding: 0.1875rem;
-            // opacity: 0.6;
+            transform: translateY(0px); /* 设置垂直方向上的偏移 */
             .resume-hd {
               position: relative;
               border: 1px solid rgba(25, 186, 139, 0.17);
@@ -851,6 +907,23 @@ setTimeout(function(){
                       @extend %li-line;
                       right: 0;
                     }
+                    &:before {
+                      @extend %li-line;
+                      left: 0;
+                    }
+                  }
+                  &:nth-child(4) {
+                    &:after {
+                      @extend %li-line;
+                      right: 0;
+                    }
+                    &:before {
+                      @extend %li-line;
+                      left: 0;
+                    }
+                  }
+                  &:nth-child(6) {
+              
                     &:before {
                       @extend %li-line;
                       left: 0;
@@ -894,6 +967,7 @@ setTimeout(function(){
               }
             }
           }
+
         }
         
         %map-style {
@@ -912,7 +986,7 @@ setTimeout(function(){
             // top:0%;
             // left:0;
           position: relative;
-          height: 13.125rem;
+          height:100%;
           .chart {
             // position: fixed;
             // top: 20%;
@@ -926,7 +1000,8 @@ setTimeout(function(){
             top: 0;
             left: 0;
             z-index: 5;
-            height: 13.125rem;
+            // height: 13.125rem;
+            height: 100%;
             width: 100%;
           }
           .map1 {
