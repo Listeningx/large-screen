@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import * as echarts from 'echarts';
+import * as axios from 'axios'
   import VueDragResize from 'vue-drag-resize'
 export default {
   name: "business",
@@ -53,7 +55,7 @@ export default {
   mounted() {
     this.$axios({
       method: "get",
-      url: "/api/grid/flow" 
+      url: "/grid/flow" 
     })
       .then((res) => {
         /* res.data - 返回值 */

@@ -11,6 +11,8 @@
 </template>
 
 <script>
+import * as echarts from 'echarts';
+import * as axios from 'axios'
 export default {
   name: "income",
   props: {

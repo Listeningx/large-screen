@@ -11,6 +11,8 @@
 </template>
 
 <script>
+import * as echarts from 'echarts';
+import * as axios from 'axios'
 export default {
   name: "talent",
   props: {
@@ -45,7 +47,7 @@ export default {
   mounted() {
     this.$axios({
       method: "get",
-      url: "/api/grid/generate" 
+      url: "/grid/generate" 
     })
       .then((res) => {
         /* res.data - 返回值 */

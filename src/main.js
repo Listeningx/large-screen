@@ -8,7 +8,7 @@ import Toast from './components/toast'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
-
+import * as echarts from 'echarts';
 import '@/assets/styles/base.scss'
 import '@/assets/styles/common.scss'
 import '@/assets/iconfont/iconfont.css'
@@ -21,13 +21,16 @@ Vue.use(VueAxios, axios)
 Vue.use(vueParticles)
 Vue.use(Vcomp)
 Vue.use(ElementUI);
+Vue.use(echarts)
 Vue.config.productionTip = false
 Vue.prototype.$axios = axios;
 Vue.prototype.$echarts = echarts;
 
 Vue.prototype.$Toast = Toast
 
-axios.defaults.baseURL =  "/";
+axios.defaults.baseURL =  "http://39.105.194.84:8001/";
+// axios.defaults.baseURL =  "/api/";
+
 
 router.beforeEach((to, from, next) => {
 	if (to.meta.title) {

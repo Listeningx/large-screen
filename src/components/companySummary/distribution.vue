@@ -12,6 +12,8 @@
 </template>
 
 <script>
+import * as echarts from 'echarts';
+import * as axios from 'axios'
 const labelRight = {
   position: 'right'
 };

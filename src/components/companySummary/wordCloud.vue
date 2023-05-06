@@ -9,14 +9,20 @@
     <!-- <div class="chart" id="chart_right1"></div> -->
 
     <div :style="{ height: he + 'px', width: wi + 'px' }" >
-                  <el-button type="primary" @click="stop" style="position:absolute;top:90px;z-index=10000">停止模拟</el-button>
-                  <!-- <timeSlider /> -->
-
+      <div>
+      <el-button type="primary" @click="jump2map" style="position:absolute;top:90px;left:-10px">跳转页面</el-button>
+      <el-button type="primary" @click="stop" style="position:absolute;top:90px;z-index=10000;left:90px">停止模拟</el-button>
+      <el-button type="primary" @click="stop" style="position:absolute;top:90px;z-index=10000;left:180px">重新开始</el-button>
+             
+      <!-- <timeSlider /> -->
+      </div>
           </div> 
   </div>
 </template>
 
 <script>
+import * as echarts from 'echarts';
+import * as axios from 'axios'
 import '@/assets/js/echarts-wordcloud.min'
 
 export default {
@@ -62,7 +68,12 @@ export default {
     // }, 5000)
   },
   methods: {
-
+    jump2map(event){
+    console.log("jumpjump")
+    this.$router.push({
+          path: '/map'
+         })
+  },
     getEchartRight1() {
       this.warning = '当前电网总负载为75%，处于较安全状态';
       let myChart = echarts.init(document.getElementById('chart_right1'));

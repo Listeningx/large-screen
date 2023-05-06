@@ -45,18 +45,19 @@ export default {
     },
     props:{
         getEchart:Function,
-        dialogVisible:Boolean,
+        // dialogVisible:Boolean,
     },
     methods: {
       start() {
         console.log('submit!');
-        this.dialogVisible = false;
+        // this.dialogVisible = false;
+        this.$emit("closeDialog");
         console.log(this.form)
         this.$axios({
           method: "post",
 
           // TODO:
-          url: "/api/grid/start" ,
+          url: "/grid/start" ,
 
           data: {
             /* 传入参数 */

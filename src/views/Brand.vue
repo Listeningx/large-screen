@@ -24,7 +24,6 @@
       </header>
 
       <section class="mainbox">
-        <!-- <littleBar /> -->
 
         <div class="item left">
 
@@ -64,13 +63,35 @@
 
         <div class="item center">
          
-
-   <el-dialog
+          <div class="resume">
+            <div class="resume-hd">
+              <ul>
+                <li>
+                  <countTo :startVal='startVal' :endVal='490' :duration='6000' separator=""></countTo>
+                </li>
+                <li>
+                  <countTo :startVal='startVal' :endVal='75' :duration='6000' separator=""></countTo>
+                </li>
+                <li>
+                  <countTo :startVal='startVal' :endVal='3000' :duration='6000' separator=""></countTo>
+                </li>
+              </ul>
+            </div>
+            <div class="resume-bd">
+              <ul>
+                <li>公司总人数（单位：人）</li>
+                <li>技术人员占比（单位：%）</li>
+                <li>产品投资额（单位：万元）</li>
+              </ul>
+            </div>
+          </div>
+  <el-dialog
   title="选择"
   :visible.sync="dialogVisible"
   width="30%"
-  center>
-          <startForm :getEchart="getEchart" :dialogVisible="dialogVisible"/>
+  center
+ >
+          <startForm :getEchart="getEchart"  v-on:closeDialog="closeDialog"/>
 </el-dialog>
     
           <div class="map">
@@ -210,6 +231,10 @@ export default {
 
   },
   methods: {
+    closeDialog(){
+      console.log("close")
+      this.dialogVisible = false;
+    },
     resize_r2 (newRect) {
       this.width_r2 = newRect.width;
       this.height_r2 = newRect.height;
@@ -262,6 +287,7 @@ export default {
       this.nowTime = hh + ':' + mm + ':' + ss;
     },
     nowTimes() {
+      // console.log("nowtimes")
       this.timeFormate(new Date());
       setInterval(this.nowTimes, 1000);
       this.clear();
@@ -271,7 +297,7 @@ export default {
       this.nowTimes = null;
     },
     getWeather() { // 第三方天气api接口
-      axios.get('https://www.tianqiapi.com/api/', {
+      this.$axios.get('https://www.tianqiapi.com/api/', {
         params: {
           appid: '26148275',
           appsecret: '2id6H48Y',
@@ -308,6 +334,39 @@ export default {
       let myChart = echarts.getInstanceByDom(document.getElementById('chart_map'));
       myChart.clear();
     },
+    getGridStatus(graph){
+      console.log("in get")
+      let gen_p,gen_q,gen_v,ld_p,stoenergy_p,ld_q,ld_v,p_or,q_or,v_or,a_or,p_ex,q_ex,v_ex,a_ex;
+        this.$axios({
+        method: "get",
+        url: "/grid/gen_p/"
+      })
+        .then((res) => {
+          /* res.data - 返回值 */
+        console.log("gen_p_suc");
+        gen_p = res.data;
+        }).catch((err) => {
+          /* 异常信息 */
+          console.log(err);
+        console.log("res_err");
+        });
+
+        setTimeout(()=>{
+          let gen_p_cnt = 0;
+          for(let node of graph.nodes){
+            var tmp = node.name.split("_");
+            if(tmp[0]=="gen"){
+              node.gen_p = gen_p[gen_p_cnt++];
+              
+              node.tooltip = {
+                formatter:'机组有功出力：'+node.gen_p
+              }
+              console.log(node.name)
+              console.log(node)
+            }
+          }
+        },2000)
+    },
     convertData(data) { // 拓扑图数据转换
       var num = 30;
       let res = {nodes:[],links:[]};
@@ -331,7 +390,10 @@ export default {
           name:"gen_" + id[1],
           category: 1,//1代表发电机
           symbolSize:10,
-          symbol:'diamond'
+          symbol:'diamond',
+          tooltip:{
+
+          }
         });
 
           res.links.push({
@@ -439,7 +501,7 @@ export default {
       }
       this.$axios({
       method: "get",
-      url: "/api/grid/bus_gen/"
+      url: "/grid/bus_gen/"
     })
       .then((res) => {
         /* res.data - 返回值 */
@@ -458,7 +520,7 @@ export default {
       });
       this.$axios({
       method: "get",
-      url: "/api/grid/bus_load/" 
+      url: "/grid/bus_load/" 
     })
       .then((res) => {
         /* res.data - 返回值 */
@@ -478,7 +540,7 @@ export default {
       });
       this.$axios({
       method: "get",
-      url: "/api/grid/bus_branch/" 
+      url: "/grid/bus_branch/" 
     })
       .then((res) => {
         /* res.data - 返回值 */
@@ -506,9 +568,6 @@ export default {
 
     setTopoOption(graph){//设置拓扑图格式
       let myChart = echarts.getInstanceByDom(document.getElementById('chart_map'));
-      // var graph
-  // if(sync >= 3){
-  // }
 
   myChart.hideLoading();
   graph.nodes.forEach(function (node) {
@@ -521,7 +580,9 @@ export default {
       top: 'bottom',
       left: 'right'
     },
-    tooltip: {},
+    tooltip: {
+      trigger:'item'
+    },
     legend: [
       {
         // selectedMode: 'single',
@@ -571,6 +632,9 @@ export default {
     },
 
     getEchart() { // 初始化地图数据
+
+   
+
       let myChart = echarts.init(document.getElementById('chart_map'),'dark');
       // let sync = 0;//用于同步
       myChart.showLoading();
@@ -625,19 +689,24 @@ setTimeout(function(){
   // let topo_data = methods.getTopoInfo();
 
     var graph = methods.convertData(topo_data);
+    that.getGridStatus(graph);
+    setTimeout(()=>{
+          methods.setTopoOption(graph);
+    },2000)
 
-    methods.setTopoOption(graph);
     setInterval(function(){
       let topo_data = that.getTopoInfo();
       setTimeout(()=>{
         var graph = methods.convertData(topo_data);
+        that.getGridStatus(graph)
+        setTimeout(()=>{
+          methods.setTopoOption(graph);
+        },2000)
 
-        methods.setTopoOption(graph);
       },4000)
     },5000);
 
   },5000);
-
 
 
     },
@@ -1006,4 +1075,7 @@ setTimeout(function(){
     font-size: 80px !important;
   }
 }	
+.vdr.active:before {
+  display:none;
+}
 </style>
