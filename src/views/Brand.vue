@@ -29,18 +29,18 @@
         <div class="item left">
 
 
-      <VueDragResize :isActive="true"  :isResizable="true"    v-on:resizing="resize_l1" 
+      <VueDragResize  :isResizable="true"    v-on:resizing="resize_l1" 
           v-on:dragging="resize_l1" :z="999" :x="18" :y="68">
         <div class="panel">
 
             <h2>电能流向</h2>
-            <business :wi="width_l1" :he="height_l1" />
+            <business :wi="width_l1" :he="height_l1" h="auto" w="auto" />
             <div class="panel-footer"></div>
         </div>
       </VueDragResize>
    
 
-      <VueDragResize :isActive="true"  :isResizable="true"    v-on:resizing="resize_l2" 
+      <VueDragResize :isResizable="true"    v-on:resizing="resize_l2" 
           v-on:dragging="resize_l2" :z="999" :x="18"  :y=325>
 
           <div class="panel">
@@ -49,7 +49,7 @@
             <div class="panel-footer"></div>
           </div>
       </VueDragResize>
-      <VueDragResize :isActive="true"  :isResizable="true"    v-on:resizing="resize_l3" 
+      <VueDragResize  :isResizable="true"    v-on:resizing="resize_l3" 
           v-on:dragging="resize_l3" :z="999" :x="18" :y="580">
 
           <div class="panel">
@@ -58,7 +58,6 @@
             <div class="panel-footer"></div>
           </div>
       </VueDragResize>
-<!-- <button class="loginBtn" style="position:absolute;top:30px;left:30px;z-index=1000" @click.stop="jump2map">跳转</button> -->
         </div>
 
         <!-- <div class="item center"> -->
@@ -67,22 +66,22 @@
             <div class="resume-hd">
               <ul>
                 <li>
-                  <countTo :startVal='startVal' :endVal='one' :duration='6000' separator="" autoplay="true"></countTo>
+                  <countTo :startVal='startVal' :endVal='one' :duration='6000' separator="" autoplay=true></countTo>
                 </li>
                 <li>
-                  <countTo :startVal='startVal' :endVal='two' :duration='6000' separator="" autoplay="true"></countTo>
+                  <countTo :startVal='startVal' :endVal='two' :duration='6000' separator="" autoplay=true></countTo>
                 </li>
                 <li>
-                  <countTo :startVal='startVal' :endVal='three' :duration='6000' separator="" autoplay="true"></countTo>
+                  <countTo :startVal='startVal' :endVal='three' :duration='6000' separator="" autoplay=true></countTo>
                 </li>
                 <li>
-                  <countTo :startVal='startVal' :endVal='four' :duration='6000' separator="" autoplay="true"></countTo>
+                  <countTo :startVal='startVal' :endVal='four' :duration='6000' separator="" autoplay=true></countTo>
                 </li>
                 <li>
-                  <countTo :startVal='startVal' :endVal='five' :duration='6000' separator="" autoplay="true"></countTo>
+                  <countTo :startVal='startVal' :endVal='five' :duration='6000' separator="" autoplay=true></countTo>
                 </li>
                 <li>
-                  <countTo :startVal='startVal' :endVal='six' :duration='6000' separator="" autoplay="true"></countTo>
+                  <countTo :startVal='startVal' :endVal='six' :duration='6000' separator="" autoplay=true></countTo>
                 </li>
               </ul>
             </div>
@@ -109,11 +108,15 @@
         <!-- </div> -->
     
         
-        <div class="map">
-            <div class="chart" id="chart_map" height="100%"></div>
+          <div class="map">
+            <div class="chart" id="chart_map" height="100%" ref="chart_map"></div>
             <div class="map1"></div>
             <div class="map2"></div>
             <div class="map3"></div>
+          </div>
+
+          <div class="bottom">
+            <timeSlider  v-on:stop="stop" v-on:openDialog="openDialog"/>
           </div>
         <div class="item right">
 
@@ -133,17 +136,17 @@
           </div>
           </VueDragResize> -->
 
-      <VueDragResize :isActive="true"  :isResizable="true"    v-on:resizing="resize_r1" 
+      <VueDragResize  :isResizable="true"    v-on:resizing="resize_r1" 
           v-on:dragging="resize_r1" :z="999" :x="1290" :y=650  >
 
           <div class="panel">
             <!-- <h2>安全评估</h2> -->
-            <wordCloud  :wi="width_r1" :he="height_r1" :stop="stop"/>
+            <wordCloud  :wi="width_r1" :he="height_r1" />
             <div class="panel-footer"></div>
           </div>
         </VueDragResize>
 
-      <VueDragResize :isActive="true"  :isResizable="true"    v-on:resizing="resize_r3" 
+      <VueDragResize  :isResizable="true"    v-on:resizing="resize_r3" 
           v-on:dragging="resize_r3" :z="999" :x="1290" :y="340">
 
           <div class="panel">
@@ -251,9 +254,17 @@ export default {
 
   },
   methods: {
+    stop(){
+        console.log("stop")
+        let myChart = echarts.getInstanceByDom(document.getElementById('chart_map'));
+        myChart.clear();
+      },
     closeDialog(){
       console.log("close")
       this.dialogVisible = false;
+    },
+    openDialog(){
+      this.dialogVisible = true;
     },
     resize_r2 (newRect) {
       this.width_r2 = newRect.width;
@@ -348,12 +359,6 @@ export default {
         console.log(err)
       })
     },
-    stop(){
-      console.log("stop")
-      this.dialogVisible = true;
-      let myChart = echarts.getInstanceByDom(document.getElementById('chart_map'));
-      myChart.clear();
-    },
     getGridStatus(graph){
       console.log("in get")
       let gen_p,gen_q,gen_v,ld_p,stoenergy_p,ld_q,ld_v,p_or,q_or,v_or,a_or,p_ex,q_ex,v_ex,a_ex;
@@ -440,7 +445,7 @@ export default {
             //为使线都是蓝色，交换起止点，让source是总线结点，target是发电机
             target:"gen_" + id[1],
             source:key.toString(),
-      value:100,
+      // value:100,
 
           })
         }
@@ -460,7 +465,7 @@ export default {
           res.links.push({
             source:key.toString(),
             target:"ld_" + id[1],
-      value:100,
+      // value:100,
 
           })
         }
@@ -625,16 +630,19 @@ export default {
     },
     legend: [
       {
-        // selectedMode: 'single',
         data: graph.categories.map(function (a) {
           return a.name;
         }),
-        bottom:0,
+        top:0,
       },
     ],
-    animationDuration: 1500,
+    animation:false,
+    animationDuration: 150,
     animationEasingUpdate: 'quinticInOut',
     backgroundColor:'transparent',
+    timeline:{
+      show:true,
+    },
     series: [
       {
         color:['#05f8f8','#e64983','#f8e088'],
@@ -726,7 +734,6 @@ export default {
 // }, 5000);
 
 setTimeout(function(){
-  // let topo_data = methods.getTopoInfo();
 
     var graph = methods.convertData(topo_data);
     that.getGridStatus(graph);
@@ -848,7 +855,11 @@ setTimeout(function(){
     
     .mainbox {
       // height: 13.125rem;
-      height:100vh;
+      position: absolute;
+  top: 1rem;
+  bottom: 0;
+  width: 100%;
+  height: calc(100vh - 1rem);
       min-width: 1024px;
       max-width: 1920px;
       padding: 0.125rem 0.125rem 0;
@@ -870,11 +881,12 @@ setTimeout(function(){
 
           .resume {
           // flex: 0 0 60%;
+          z-index: 999;
           position: absolute;
-  left: 20%;
-  right: 20%;
-  margin: 0 auto;
-  text-align: center; 
+          left: 20%;
+          right: 20%;
+          margin: 0 auto;
+          text-align: center; 
             background: rgba(101, 132, 226, 0.1);
             padding: 0.1875rem;
             transform: translateY(0px); /* 设置垂直方向上的偏移 */
@@ -967,6 +979,14 @@ setTimeout(function(){
               }
             }
           }
+          .bottom{
+            z-index: 999;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+          }
 
         }
         
@@ -986,6 +1006,7 @@ setTimeout(function(){
             // top:0%;
             // left:0;
           position: relative;
+          max-height: fit-content;
           height:100%;
           .chart {
             // position: fixed;
@@ -1027,12 +1048,17 @@ setTimeout(function(){
           }
         }
         .panel {
-          position: relative;
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          // position: relative;
           height: height;
           border: 1px solid rgba(25, 186, 139, 0.17);
           background: rgba(255, 255, 255, 0.04) url(../assets/img/brand/line.png);
           padding: 0 0.1875rem 0;
-          margin-bottom: 0.1875rem;
+          // margin-bottom: 0.1875rem;
           &:before {
             position: absolute;
             top: 0;

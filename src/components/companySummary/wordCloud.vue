@@ -32,10 +32,7 @@ export default {
       type: Number,
       required: true,
     },
-    stop:{
-      type:Function,
-      required:true,
-    }
+
   },
   watch: {
     wi(newVal, oldVal ) {
@@ -229,7 +226,11 @@ export default {
 <style lang="scss" scoped>
 .word-container {
   .chart {
-    height: 3rem;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
   }
 }
 #information{
