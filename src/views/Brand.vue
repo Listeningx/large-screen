@@ -30,7 +30,7 @@
 
 
       <VueDragResize  :isResizable="true"    v-on:resizing="resize_l1" 
-          v-on:dragging="resize_l1" :z="999" :x="18" :y="68">
+          v-on:dragging="resize_l1" :z="999" :x="18" :y="68" h="300" w="400">
         <div class="panel">
 
             <h2>电能流向</h2>
@@ -215,8 +215,8 @@ export default {
       top_l2: 0,
       left_l2: 0,
 
-      width_l1: 200,
-      height_l1: 200,
+      width_l1: 300,
+      height_l1: 300,
       top_l1: 0,
       left_l1: 0,
 
@@ -418,7 +418,7 @@ export default {
       console.log("convertdata")
 
       let gens = data.bus_gen;
-      console.log(data)
+      // console.log(gens)
         Reflect.ownKeys(gens).forEach(function(key){
           // console.log(key,gens[key]);
           res.nodes.push({
@@ -552,9 +552,10 @@ export default {
         /* res.data - 返回值 */
        console.log("res_suc");
        var tmp = res.data;
+      tmp = tmp.replace(/\"/g, "");
       tmp = tmp.replace(/\'/g, "\"");
       tmp = JSON.parse(tmp);
-      topo_data.bus_gen = tmp
+      topo_data.bus_gen = tmp.bus_gen
         // sync++;
         // console.log("sync="+ sync)
       }).catch((err) => {
@@ -571,9 +572,10 @@ export default {
         /* res.data - 返回值 */
        console.log("res_suc");
        var tmp = res.data;
+      tmp = tmp.replace(/\"/g, "");
       tmp = tmp.replace(/\'/g, "\"");
       tmp = JSON.parse(tmp);
-      topo_data.bus_load = tmp
+      topo_data.bus_load = tmp.bus_load
       // sync++;
       // console.log("sync="+ sync)
 
@@ -592,9 +594,10 @@ export default {
        console.log("res_suc");
       // topo_data.bus_branch = res.data;
       var tmp = res.data;
+      tmp = tmp.replace(/\"/g, "");
       tmp = tmp.replace(/\'/g, "\"");
       tmp = JSON.parse(tmp);
-      topo_data.bus_branch = tmp
+      topo_data.bus_branch = tmp.bus_branch
       // sync++;
       // console.log("sync="+ sync)
 
@@ -633,7 +636,11 @@ export default {
         data: graph.categories.map(function (a) {
           return a.name;
         }),
-        top:0,
+        right:'10%',
+        top:'10%',
+        z:99999,
+        orient:'vertical',
+        selector: ['all', 'inverse']
       },
     ],
     animation:false,
@@ -670,13 +677,71 @@ export default {
           focus: 'adjacency',
           lineStyle: {
             width: 10
+          },
+          itemstyle:{
+            symbol:'arrow',
+
           }
         },
        
       }
     ]
   };
-  myChart.setOption(option);
+
+      myChart.setOption(option);
+
+     // 保存节点和边的高亮样式
+      var highlightStyle = {
+        node: {
+          itemStyle: {
+            symbol: 'img://../assets/img/bus.png'  // 自定义节点的高亮形状
+          }
+        },
+        edge: {
+          lineStyle: {
+            color: '#f00',  // 自定义边的高亮颜色
+            width: 3  // 自定义边的高亮宽度
+          }
+        }
+      };
+
+      // 监听鼠标移入节点事件，更新节点和边的样式
+      myChart.on('mouseover', function (params) {
+        var dataIndex = params.dataIndex;
+        var option = myChart.getOption();
+
+        // 更新节点样式
+        option.series[0].data[dataIndex].itemStyle = highlightStyle.node.itemStyle;
+
+        // 更新边样式
+        option.series[0].links.forEach(function (link) {
+          if (link.source === dataIndex || link.target === dataIndex) {
+            link.lineStyle = highlightStyle.edge.lineStyle;
+          }
+        });
+
+        // 重新渲染图表
+        myChart.setOption(option);
+        });
+
+        // 监听鼠标移出节点事件，恢复节点和边的样式
+        myChart.on('mouseout', function () {
+          var option = myChart.getOption();
+
+          // 恢复节点样式
+          option.series[0].data.forEach(function (node) {
+            node.itemStyle = null;
+          });
+
+          // 恢复边样式
+          option.series[0].links.forEach(function (link) {
+            link.lineStyle = null;
+          });
+
+          // 重新渲染图表
+          myChart.setOption(option);
+        });
+
     },
 
     getEchart() { // 初始化地图数据
