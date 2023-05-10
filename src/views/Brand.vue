@@ -140,7 +140,7 @@
           v-on:dragging="resize_r1" :z="999" :x="1290" :y=650  >
 
           <div class="panel">
-            <!-- <h2>安全评估</h2> -->
+            <h2>累计奖励</h2>
             <wordCloud  :wi="width_r1" :he="height_r1" />
             <div class="panel-footer"></div>
           </div>
