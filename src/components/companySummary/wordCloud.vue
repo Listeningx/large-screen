@@ -116,21 +116,33 @@ export default {
           type: 'time',
           splitLine: {
             show: false
-          }
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#fff',
+            },
+          },
+
         },
         yAxis: {
           type: 'value',
           boundaryGap: [0, '100%'],
           splitLine: {
             show: false
-          }
+          },
+          axisLine: {
+            lineStyle: {
+              color: '#fff',
+            },
+          },
         },
         series: [
           {
             name: 'Fake Data',
             type: 'line',
             showSymbol: false,
-            data: data
+            data: data,
+            lineStyle:{color:'red'}
           }
         ]
       };

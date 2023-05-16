@@ -225,8 +225,8 @@ export default {
       top_l3: 0,
       left_l3: 0,
 
-      width_r1: 300,
-      height_r1: 100,
+      width_r1: 200,
+      height_r1: 200,
       top_r1: 0,
       left_r1: 0,
 
@@ -615,6 +615,9 @@ export default {
     },
 
     setTopoOption(graph){//设置拓扑图格式
+
+      console.log("=============graph===========\n")
+      console.log(graph)
       let myChart = echarts.getInstanceByDom(document.getElementById('chart_map'));
 
   myChart.hideLoading();
@@ -622,6 +625,21 @@ export default {
     node.label = {
       show: node.symbolSize > 30
     };
+    if (node.category === 0) { //总线
+      // node.symbol = 'image://'+require('@/assets/iconfont/solar-panel.png');
+    } else if (node.category === 1) { //发电机
+      if(node.name.split('_')[1] % 4 == 0) {
+        node.symbol = 'image://'+require('@/assets/iconfont/solar-panel.png');
+      } else if(node.name.split('_')[1] % 4 == 1){
+        node.symbol = 'image://'+require('@/assets/iconfont/clean-energy.png');
+      } else if(node.name.split('_')[1] % 4 == 2){
+        node.symbol = 'image://'+require('@/assets/iconfont/thermal.png');
+      } else {
+        node.symbol = 'image://'+require('@/assets/iconfont/radiation.png');
+      }
+    } else if (node.category === 2) { //负载
+      node.symbol = 'image://'+require('@/assets/iconfont/architecture-and-city.png');
+    }
   });
   var option = {
     title: {
@@ -673,6 +691,7 @@ export default {
           curveness: 0.01,
           width:3
         },
+        symbolSize:100,
         emphasis: {
           focus: 'adjacency',
           lineStyle: {
