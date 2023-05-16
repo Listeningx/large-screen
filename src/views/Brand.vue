@@ -140,7 +140,7 @@
           v-on:dragging="resize_r1" :z="999" h="200" w="300" :x="10" :y="parentH-200"  >
 
           <div class="panel">
-            <h2>累计奖励</h2>
+            <h2 style="margin-bottom: -50px;">累计奖励</h2>
             <wordCloud  :wi="width_r1" :he="height_r1" />
             <div class="panel-footer"></div>
           </div>
@@ -228,7 +228,7 @@ export default {
       left_l3: 0,
 
       width_r1: 200,
-      height_r1: 200,
+      height_r1: 300,
       top_r1: 0,
       left_r1: 0,
 
@@ -401,9 +401,8 @@ export default {
           let gen_p_cnt = 0,ld_p_cnt = 0;
           for(let node of graph.nodes){
             var tmp = node.name.split("_");
-            if(tmp[0]=="gen"){
+              if(tmp[0]=="gen"){
               node.gen_p = gen_p[gen_p_cnt++];
-              
               node.tooltip = {
                 formatter:function(params){
                   const node = params.data;
@@ -658,21 +657,22 @@ export default {
     node.label = {
       show: node.symbolSize > 30
     };
-    if (node.category === 0) { //总线
-      // node.symbol = 'image://'+require('@/assets/iconfont/solar-panel.png');
-    } else if (node.category === 1) { //发电机
-      if(node.name.split('_')[1] % 4 == 0) {
-        node.symbol = 'image://'+require('@/assets/iconfont/solar-panel.png');
-      } else if(node.name.split('_')[1] % 4 == 1){
-        node.symbol = 'image://'+require('@/assets/iconfont/clean-energy.png');
-      } else if(node.name.split('_')[1] % 4 == 2){
-        node.symbol = 'image://'+require('@/assets/iconfont/thermal.png');
-      } else {
-        node.symbol = 'image://'+require('@/assets/iconfont/radiation.png');
-      }
-    } else if (node.category === 2) { //负载
-      node.symbol = 'image://'+require('@/assets/iconfont/architecture-and-city.png');
-    }
+    // if (node.category === 0) { //总线
+    //   node.symbol = 'image://'+require('@/assets/iconfont/bus.png');
+    // } else if (node.category === 1) { //发电机
+    //   if(node.name.split('_')[1] % 4 == 0) {
+    //     node.symbol = 'image://'+require('@/assets/iconfont/solar-panel.png');
+    //   } else if(node.name.split('_')[1] % 4 == 1){
+    //     node.symbol = 'image://'+require('@/assets/iconfont/clean-energy.png');
+    //   } else if(node.name.split('_')[1] % 4 == 2){
+    //     node.symbol = 'image://'+require('@/assets/iconfont/thermal.png');
+    //   } else {
+    //     node.symbol = 'image://'+require('@/assets/iconfont/radiation.png');
+    //   }
+    // } else if (node.category === 2) { //负载
+    //   node.symbol = 'image://'+require('@/assets/iconfont/architecture-and-city.png');
+    // }
+    // node.symbolSize = 32;
   });
   var option = {
     title: {
@@ -721,7 +721,6 @@ export default {
           curveness: 0.01,
           width:3
         },
-        symbolSize:100,
         emphasis: {
           focus: 'adjacency',
           lineStyle: {
@@ -740,13 +739,13 @@ export default {
 
       myChart.setOption(option);
 
+      
      // 保存节点和边的高亮样式
       var highlightStyle = {
         node: {
           itemStyle: {
            symbol:'diomand',
            color:'red',
-
           }
         },
         edge: {
@@ -763,7 +762,27 @@ export default {
         var option = myChart.getOption();
         console.log(params)
         // 更新节点样式
-        option.series[0].data[dataIndex].itemStyle = highlightStyle.node.itemStyle;
+        console.log("==============cur node=============")
+        console.log(option.series[0].data[dataIndex])
+        let node = option.series[0].data[dataIndex]
+
+        if (node.category === 0) { //总线
+          option.series[0].data[dataIndex].symbol = 'image://'+require('@/assets/iconfont/bus.png');
+        } else if (node.category === 1) { //发电机
+          if(node.name.split('_')[1] % 4 == 0) {
+            option.series[0].data[dataIndex].symbol = 'image://'+require('@/assets/iconfont/solar-panel.png');
+          } else if(node.name.split('_')[1] % 4 == 1){
+            option.series[0].data[dataIndex].symbol = 'image://'+require('@/assets/iconfont/clean-energy.png');
+          } else if(node.name.split('_')[1] % 4 == 2){
+            option.series[0].data[dataIndex].symbol = 'image://'+require('@/assets/iconfont/thermal.png');
+          } else {
+            option.series[0].data[dataIndex].symbol = 'image://'+require('@/assets/iconfont/radiation.png');
+          }
+        } else if (node.category === 2) { //负载
+          option.series[0].data[dataIndex].symbol = 'image://'+require('@/assets/iconfont/building.png');
+        }
+        option.series[0].data[dataIndex].symbolSize = 32;
+        // option.series[0].data[dataIndex].itemStyle = highlightStyle.node.itemStyle;
 
         // 更新边样式
         option.series[0].links.forEach(function (link) {
@@ -783,6 +802,7 @@ export default {
           // 恢复节点样式
           option.series[0].data.forEach(function (node) {
             node.itemStyle = null;
+            node.symbol = null;
           });
 
           // 恢复边样式
