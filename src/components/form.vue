@@ -5,24 +5,26 @@
         
         <el-form-item label="模拟算法">
             <el-radio-group v-model="form.algorithm">
-            <el-radio label="UKPG"></el-radio>
+            <el-radio label="A2C"></el-radio>
+            <el-radio label="DDPG"></el-radio>
+            <el-radio label="TD3"></el-radio>
             <el-radio label="random"></el-radio>
             </el-radio-group>
         </el-form-item>
         <el-form-item label="速率">
             <el-radio-group v-model="form.speed">
-            <el-radio label="0.1s"></el-radio>
+            <el-radio label="1s"></el-radio>
             <el-radio label="2s"></el-radio>
             <el-radio label="5s"></el-radio>
             <el-radio label="10s"></el-radio>
             </el-radio-group>
         </el-form-item>
-        <el-form-item label="电网环境">
+        <!-- <el-form-item label="电网环境">
             <el-radio-group v-model="form.env">
             <el-radio label="线上品牌商赞助"></el-radio>
             <el-radio label="线下场地免费"></el-radio>
             </el-radio-group>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item center>
             <el-button type="primary" @click="start" style="text-align:center">开始模拟</el-button>
         </el-form-item>
@@ -57,13 +59,13 @@ export default {
           method: "post",
 
           // TODO:
-          url: "/grid/start" ,
+          url: "/grid/start/" ,
 
           data: {
             /* 传入参数 */
             policy: this.form.algorithm,
             speed: this.form.speed,
-            env:this.form.env,
+            // env:this.form.env,
           },
         })
           .then((res) => {

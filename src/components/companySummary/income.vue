@@ -52,12 +52,21 @@ export default {
       setTimeout(()=>{
 
       let myChart = echarts.init(document.getElementById('chart_left3'));
-      let data = {
-        city: ['9:20', '9:30', '9:40', '9:50', '10:00', '10:10'],
-        num: ['895', '1121', '985', '1290', '848', '1830'],
-        num2:['1272','1001','912','890','954','976'],
-        num3:['894','1232','908','799','989','1176']
-      }
+
+      // 定义时间轴
+        const now = new Date();
+        const timeAxis = [];
+        for (let i = 0; i < 6; i++) {
+          const time = new Date(now - (5 - i) * 5 * 60 * 1000);
+          timeAxis.push(time.getHours() + ':' + time.getMinutes());
+        }
+        // 定义初始数据
+        let data1 = [],data2=[],data3=[];
+        for (let i = 0; i < 6; i++) {
+          data1.push(Math.random() * 100);
+          data2.push(Math.random() * 100);
+          data3.push(Math.random() * 100);
+        }
 
       let option = {
         tooltip: {
@@ -106,6 +115,7 @@ export default {
               color: '#092b5d'
             },
           },
+
           axisLabel: { //坐标轴刻度标签的相关设置
             textStyle: {
               color: '#24c4ff',
@@ -118,11 +128,15 @@ export default {
           axisTick: {
             show: false,
           },
-          data: data.city
+          data: timeAxis,
+
         }],
-        yAxis: [{
-          min: 500,
-          max: 1500,
+        yAxis: [
+         
+        {
+          type: 'value',  
+          // min: 2000,
+          // max: 10000,
           splitLine: {
             show: false,
             lineStyle: {
@@ -158,25 +172,7 @@ export default {
             borderColor: 'rgba(0,0,0,.4)',
           },
           itemStyle: {
-            // color: "rgba(14,30,73,1)",
-            // borderColor: "#646ace",
-            // borderWidth: 2
           },
-          // label: {
-          //   normal: {
-          //     show: true,
-          //     position: 'top',
-          //     formatter: [
-          //       ' {a|{c}}',
-          //     ].join(','),
-          //     rich: {
-          //       a: {
-          //         color: '#fff',
-          //         align: 'center',
-          //       },
-          //     }
-          //   }
-          // },
           smooth: true,
           areaStyle: { //区域填充样式
             normal: {
@@ -192,7 +188,7 @@ export default {
               shadowBlur: 20 //shadowBlur设图形阴影的模糊大小。配合shadowColor,shadowOffsetX/Y, 设置图形的阴影效果。
             }
           },
-          data: data.num
+          data: data1
         },
         {
           name: '火力',
@@ -226,7 +222,7 @@ export default {
               shadowBlur: 20 //shadowBlur设图形阴影的模糊大小。配合shadowColor,shadowOffsetX/Y, 设置图形的阴影效果。
             }
           },
-          data: data.num2
+          data: data2
         },
         {
           name: '风力',
@@ -260,12 +256,44 @@ export default {
               shadowBlur: 20 //shadowBlur设图形阴影的模糊大小。配合shadowColor,shadowOffsetX/Y, 设置图形的阴影效果。
             }
           },
-          data: data.num3
+          data: data3
         }
       ]
       }
 
       myChart.setOption(option, true);
+      setInterval(function () {
+        this.$axios.get('/grid/generate')
+        .then(response => {
+          // 更新数据
+          const now = new Date();
+          data1.shift();
+          data1.push(response.data[0]);
+          data2.shift();
+          data2.push(response.data[1]);
+          data3.shift();
+          data3.push(response.data[2]);
+          timeAxis.shift();
+          timeAxis.push(now.getHours() + ':' + now.getMinutes());
+
+          // 更新图表配置项
+          chart.setOption({
+            xAxis: {
+              data: timeAxis
+            },
+            series: [{
+              data: data1
+            },{
+              data:data2
+            },{
+              data:data3
+            }]
+          });
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }, 5 * 60 * 1000); // 每 5 分钟更新一次
       window.addEventListener('resize', () => {
         myChart.resize();
       })
