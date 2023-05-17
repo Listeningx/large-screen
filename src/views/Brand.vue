@@ -116,7 +116,7 @@
           </div>
 
           <div class="bottom">
-            <timeSlider  v-on:stop="stop" v-on:openDialog="openDialog"/>
+            <timeSlider  v-on:stop="stop" v-on:openDialog="openDialog" v-on:convertHistoryData = "convertHistoryData" v-on:restoreTimer="restoreTimer"/>
           </div>
         <!-- <div class="item right"> -->
 
@@ -147,7 +147,7 @@
         </VueDragResize>
 
       <VueDragResize  :isResizable="true"    v-on:resizing="resize_r3" 
-          v-on:dragging="resize_r3" :z="999" h="300" w="300" :x="10" :y="parentH*0.35">
+          v-on:dragging="resize_r3" :z="999" h="300" w="300" :x="10" :y="parentH-500">
 
           <div class="panel">
             <h2>异常事件</h2>
@@ -191,6 +191,7 @@ export default {
       week: '',
       date: '',
       timer: null,
+      graph_timer:null,
       imgSrc: '',
       weatcherData: {},
       startVal: 0,
@@ -238,7 +239,7 @@ export default {
       left_r3: 0,
 
       sync:0,
-      gen_image:'../assets/img/wind.png'
+      history:0,
   	}
   },
   computed: {
@@ -258,12 +259,57 @@ export default {
     this.parentW = this.$refs.parent.clientWidth
     console.log('parenth:'+this.parentH)
     console.log('parentw:'+this.parentW)
+    this.getRewards();
   },
   methods: {
+    getRewards(){
+      this.$axios({
+        method: "get",
+        url: "/grid/expense"
+      }).then(res => {
+        this.one = res.data
+        // console.log("=============expense===========")
+        // console.log(res)
+      })
+      this.$axios({
+        method: "get",
+        url: "/grid/volt"
+      }).then(res => {
+        this.two = res.data
+      })
+      this.$axios({
+        method: "get",
+        url: "/grid/q"
+      }).then(res => {
+        this.three = res.data
+      })
+      this.$axios({
+        method: "get",
+        url: "/grid/p"
+      }).then(res => {
+        this.four = res.data
+      })
+      this.$axios({
+        method: "get",
+        url: "/grid/new_energy"
+      }).then(res => {
+        this.five = res.data
+      })
+      this.$axios({
+        method: "get",
+        url: "/grid/over"
+      }).then(res => {
+        this.six = res.data
+      })
+    },
+    
     stop(){
         console.log("stop")
-        let myChart = echarts.getInstanceByDom(document.getElementById('chart_map'));
-        myChart.clear();
+        
+        clearInterval(this.graph_timer); 
+        console.log(this.graph_timer == null)
+        // let myChart = echarts.getInstanceByDom(document.getElementById('chart_map'));
+        // myChart.clear();
       },
     closeDialog(){
       console.log("close")
@@ -407,7 +453,7 @@ export default {
                 formatter:function(params){
                   const node = params.data;
                   const img = `<img src="../assets/img/wind.png" width="50" height="50" />`;
-                  return img+'<br/>'+node.name + '<br/>机组有功出力：'+node.gen_p
+                  return node.name + '<br/>机组有功出力：'+node.gen_p
                 }
               }
               console.log(node.name)
@@ -818,7 +864,8 @@ export default {
 
     getEchart() { // 初始化地图数据
 
-   
+      // let myChart = echarts.getInstanceByDom(document.getElementById('chart_map'));
+      //   myChart.dispose();
 
       let myChart = echarts.init(document.getElementById('chart_map'),'dark');
       // let sync = 0;//用于同步
@@ -878,7 +925,7 @@ setTimeout(function(){
           methods.setTopoOption(graph);
     },2000)
 
-    setInterval(function(){
+    that.graph_timer = setInterval(function(){
       let topo_data = that.getTopoInfo();
       setTimeout(()=>{
         var graph = methods.convertData(topo_data);
@@ -890,6 +937,7 @@ setTimeout(function(){
       },4000)
     },9000);
 
+
   },5000);
 
 
@@ -898,12 +946,29 @@ setTimeout(function(){
   beforeDestroy() {
     clearInterval(this.timer);
   },
-  jump2map(event){
-    console.log("jumpjump")
-    this.$router.push({
-          path: '/map'
-         })
-  },
+    convertHistoryData(data){
+      console.log("============converthistorydata===========")
+      clearInterval(this.graph_timer);
+      const graph = this.convertData(data);
+      this.setTopoOption(graph)
+    },
+    restoreTimer(){
+      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!restore!!!!!!!!!!!!!!!!!!!!!!!!!")
+      var methods = this.$options.methods
+      var that = this
+
+      this.graph_timer = setInterval(function(){
+      let topo_data = that.getTopoInfo();
+      setTimeout(()=>{
+        var graph = methods.convertData(topo_data);
+        that.getGridStatus(graph)
+        setTimeout(()=>{
+          methods.setTopoOption(graph);
+        },2000)
+
+      },4000)
+    },9000);
+    }
   }}
   </script>
 

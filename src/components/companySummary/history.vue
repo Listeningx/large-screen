@@ -34,17 +34,18 @@ export default {
   data() {
     return {
       timer: null,
-      tabTitle: ['线路', '平衡机'],
+      tabTitle: ['线路', '平衡机','发电机'],
       tabCon: [
         [
           '9:20:03 线路软过载',
-    
           '10:27:40 线路断开'
         ],
         [
           '9:30:03 平衡机接近极限',
           '11:32:43  平衡机接近极限',
-      
+        ],
+        [
+          '9:56:14 发电机达到上限'
         ],
         // [
         //   '9:41:09 gen_20功率增加59kW',
@@ -71,6 +72,19 @@ export default {
   },
   mounted() {
     this.getTimer();
+    this.$axios({
+      method: "get",
+      url: "/grid/exception" 
+    })
+      .then((res) => {
+       console.log("=============exc==============");
+       console.log(res.data)
+       this.tabCon[0]=res.data[0].toString()
+      }).catch((err) => {
+        console.log(err);
+      //  console.log("flow_err");
+
+  })
   },
   methods: {
     getTimer() {
