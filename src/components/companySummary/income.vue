@@ -57,15 +57,21 @@ export default {
         const now = new Date();
         const timeAxis = [];
         for (let i = 0; i < 6; i++) {
-          const time = new Date(now - (5 - i) * 5 * 60 * 1000);
-          timeAxis.push(time.getHours() + ':' + time.getMinutes());
+          const time = new Date(now - (5 - i) *  60 * 1000);
+          let min
+          if(time.getMinutes()>=0&&time.getMinutes()<=9){
+            min = "0" + time.getMinutes()
+          }else{
+            min = time.getMinutes()
+          }
+          timeAxis.push(time.getHours() + ':' + min);
         }
         // 定义初始数据
         let data1 = [],data2=[],data3=[];
         for (let i = 0; i < 6; i++) {
-          data1.push(Math.random() * 100);
-          data2.push(Math.random() * 100);
-          data3.push(Math.random() * 100);
+          data1.push(Math.random() * 1000);
+          data2.push(Math.random() * 1000);
+          data3.push(Math.random() * 1000);
         }
 
       let option = {
@@ -93,11 +99,7 @@ export default {
               }
             },
           },
-          // formatter: (value) => {
-            // console.log("value = "+value)
-            // console.log(value)
-            // return value[0].name + '总功率：<br>' + value[0].value + 'kW' +value[1].value; 
-          // }
+
         },
         grid: {
           top: '5%',
@@ -262,22 +264,31 @@ export default {
       }
 
       myChart.setOption(option, true);
+      var that = this
       setInterval(function () {
-        this.$axios.get('/grid/generate')
+        that.$axios.get('/grid/generate')
         .then(response => {
+          console.log("generate")
+          console.log(response)
           // 更新数据
           const now = new Date();
           data1.shift();
-          data1.push(response.data[0]);
+          data1.push(response.data[0]+Math.random()*1000);
           data2.shift();
-          data2.push(response.data[1]);
+          data2.push(response.data[1]+Math.random()*1000);
           data3.shift();
-          data3.push(response.data[2]);
+          data3.push(response.data[2]+Math.random()*100);
+          let min
+          if(now.getMinutes()>=0&&now.getMinutes()<=9){
+            min = "0" + now.getMinutes()
+          }else{
+            min = now.getMinutes()
+          }
           timeAxis.shift();
-          timeAxis.push(now.getHours() + ':' + now.getMinutes());
+          timeAxis.push(now.getHours() + ':' + min);
 
           // 更新图表配置项
-          chart.setOption({
+          myChart.setOption({
             xAxis: {
               data: timeAxis
             },
@@ -293,7 +304,7 @@ export default {
         .catch(error => {
           console.error(error);
         });
-    }, 5 * 60 * 1000); // 每 5 分钟更新一次
+    }, 60*1000); // 每 5 分钟更新一次
       window.addEventListener('resize', () => {
         myChart.resize();
       })
