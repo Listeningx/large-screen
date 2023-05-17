@@ -66,22 +66,22 @@
             <div class="resume-hd">
               <ul>
                 <li>
-                  <countTo :startVal='startVal' :endVal='13470' :duration='6000' separator="" autoplay="true"></countTo>
+                  <countTo :startVal='startVal' :endVal='this.one' :duration='6000' separator="" autoplay="true"></countTo>
                 </li>
                 <li>
-                  <countTo :startVal='startVal' :endVal='46' :duration='6000' separator="" autoplay="true"></countTo>
+                  <countTo :startVal='startVal' :endVal='this.two' :duration='6000' separator="" autoplay="true"></countTo>
                 </li>
                 <li>
-                  <countTo :startVal='startVal' :endVal='19' :duration='6000' separator="" autoplay="true"></countTo>
+                  <countTo :startVal='startVal' :endVal='this.three' :duration='6000' separator="" autoplay="true"></countTo>
                 </li>
                 <li>
-                  <countTo :startVal='startVal' :endVal='16' :duration='6000' separator="" autoplay="true"></countTo>
+                  <countTo :startVal='startVal' :endVal='this.four' :duration='6000' separator="" autoplay="true"></countTo>
                 </li>
                 <li>
-                  <countTo :startVal='startVal' :endVal='328' :duration='6000' separator="" autoplay="true"></countTo>
+                  <countTo :startVal='startVal' :endVal='this.five' :duration='6000' separator="" autoplay="true"></countTo>
                 </li>
                 <li>
-                  <countTo :startVal='startVal' :endVal='23' :duration='6000' separator="" autoplay="true"></countTo>
+                  <countTo :startVal='startVal' :endVal='this.six' :duration='6000' separator="" autoplay="true"></countTo>
                 </li>
               </ul>
             </div>
