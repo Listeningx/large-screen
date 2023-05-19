@@ -66,22 +66,22 @@
             <div class="resume-hd">
               <ul>
                 <li>
-                  <countTo :startVal='startVal' :endVal='this.one' :duration='6000' separator="" autoplay="true"></countTo>
+                  <countTo :startVal='this.startVal1' :endVal='this.one' :duration='4000' separator="" autoplay="true"></countTo>
                 </li>
                 <li>
-                  <countTo :startVal='startVal' :endVal='this.two' :duration='6000' separator="" autoplay="true"></countTo>
+                  <countTo :startVal='this.startVal2' :endVal='this.two' :duration='4000' separator="" autoplay="true"></countTo>
                 </li>
                 <li>
-                  <countTo :startVal='startVal' :endVal='this.three' :duration='6000' separator="" autoplay="true"></countTo>
+                  <countTo :startVal='this.startVal3' :endVal='this.three' :duration='4000' separator="" autoplay="true"></countTo>
                 </li>
                 <li>
-                  <countTo :startVal='startVal' :endVal='this.four' :duration='6000' separator="" autoplay="true"></countTo>
+                  <countTo :startVal='this.startVal4' :endVal='this.four' :duration='4000' separator="" autoplay="true"></countTo>
                 </li>
                 <li>
-                  <countTo :startVal='startVal' :endVal='this.five' :duration='6000' separator="" autoplay="true"></countTo>
+                  <countTo :startVal='this.startVal5' :endVal='this.five' :duration='4000' separator="" autoplay="true"></countTo>
                 </li>
                 <li>
-                  <countTo :startVal='startVal' :endVal='this.six' :duration='6000' separator="" autoplay="true"></countTo>
+                  <countTo :startVal='this.startVal6' :endVal='this.six' :duration='4000' separator="" autoplay="true"></countTo>
                 </li>
               </ul>
             </div>
@@ -90,7 +90,7 @@
                 <li>电网运行费用</li>
                 <li>电压越限数量</li>
                 <li>无功出力越限数量</li>
-                <li>平衡机功率超标数量</li>
+                <li>平衡机工作状态</li>
                 <li>新能源机组容量</li>
                 <li>线路越限数量</li>
               </ul>
@@ -147,7 +147,7 @@
         </VueDragResize>
 
       <VueDragResize  :isResizable="true"    v-on:resizing="resize_r3" 
-          v-on:dragging="resize_r3" :z="999" h="300" w="300" :x="10" :y="parentH-500">
+          v-on:dragging="resize_r3" :z="999" h="300" w="300" :x="10" :y="parentH*0.1+300">
 
           <div class="panel">
             <h2>异常事件</h2>
@@ -192,9 +192,16 @@ export default {
       date: '',
       timer: null,
       graph_timer:null,
+      check_value:null,
+
       imgSrc: '',
       weatcherData: {},
-      startVal: 0,
+      startVal1: 0,
+      startVal2: 0,
+      startVal3: 0,
+      startVal4: 0,
+      startVal5: 0,
+      startVal6: 0,
       one:0,
       two:0,
       three:0,
@@ -246,6 +253,7 @@ export default {
   	
   },
   created() {
+    setInterval(this.checkValue, 10000); // 10秒执行一次
   },
   mounted() {
     this.getWeather();
@@ -262,6 +270,16 @@ export default {
     this.getRewards();
   },
   methods: {
+    async checkValue() {
+      this.startVal1 = this.one
+      this.startVal2 = this.two
+      this.startVal3 = this.three
+      this.startVal4 = this.four
+      this.startVal5 = this.five
+      this.startVal6 = this.six
+      
+      this.getRewards()
+    },
     getRewards(){
       this.$axios({
         method: "get",
